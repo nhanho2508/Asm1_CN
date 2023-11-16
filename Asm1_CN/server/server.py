@@ -12,7 +12,7 @@ class Server:
         self.semaphore = Semaphore(max_connect)  
         self.sock.listen(max_connect) 
         self.setOfHostName = {}
-        self.setOfLists = {} 
+        self.setOfListsOfInfoFile = {} 
         print("Server started listening on host ", self.host, ", port ", self.port)
     def request(self):
         while True:
@@ -32,7 +32,7 @@ class Server:
         if request[0] == REGISTER:
             hostname = request[1]
             self.semaphore.acquire()
-            register(conn, self.setOfLists, self.setOfHostName, hostname)
+            register(conn, self.setOfListsOfInfoFile, self.setOfHostName, hostname)
             self.semaphore.release()
        
         #print(self.setOfHostName) #For debug
