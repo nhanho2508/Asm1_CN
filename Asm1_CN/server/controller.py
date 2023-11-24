@@ -54,4 +54,14 @@ def register(conn, set_of_lists, set_of_host_name, host_name):
     set_of_host_name[list_id] = host_name
     set_of_lists[list_id] = None  
     conn.send(pickle.dumps([list_id, True]))  
-            
+    
+def search(filename, setOfInfoFileLists):
+    found = False
+    return_file = {}
+    for key in setOfInfoFileLists:
+        print(setOfInfoFileLists.get(key))
+        if filename in setOfInfoFileLists.get(key):
+            if not found:
+                found = True
+            return_file[key] = setOfInfoFileLists.get(key)
+    return found, return_file
