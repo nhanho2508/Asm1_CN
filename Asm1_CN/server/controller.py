@@ -55,3 +55,9 @@ def register(conn, set_of_lists, set_of_host_name, host_name):
     set_of_lists[list_id] = None  
     conn.send(pickle.dumps([list_id, True]))  
             
+def publish(conn, set_of_lists, set_of_host_name, host_name, filename):  
+    list_id = len(set_of_lists) + 1
+    set_of_host_name[list_id] = host_name
+    set_of_lists[list_id] = filename
+    print(f'"{set_of_lists}","{host_name}"\n')
+    conn.send(pickle.dumps([list_id, True]))  

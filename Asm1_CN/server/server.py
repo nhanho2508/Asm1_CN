@@ -34,6 +34,13 @@ class Server:
             self.semaphore.acquire()
             register(conn, self.setOfListsOfInfoFile, self.setOfHostName, hostname)
             self.semaphore.release()
-       
+        if request[0] == PUBLISH:
+            hostname = request[1]
+            filename = request[2]
+            self.semaphore.acquire()
+            publish(conn, self.setOfListsOfInfoFile, self.setOfHostName, hostname, filename)
+            print("Filename")
+            self.semaphore.release()
+
         #print(self.setOfHostName) #For debug
         
