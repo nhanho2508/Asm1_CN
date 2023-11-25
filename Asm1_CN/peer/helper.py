@@ -41,3 +41,10 @@ def make_publish_copy(lname_path, fname, repo_path):
                     break
                 destination_file.write(chunk)
     print("success make copy to repo")
+def create_repo():
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    folder_name = "repo_test"
+    create_folder_path = os.path.join(current_folder, folder_name)
+    if not os.path.exists(create_folder_path):
+        os.makedirs(create_folder_path)
+    print(create_folder_path)
