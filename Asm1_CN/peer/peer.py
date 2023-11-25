@@ -92,6 +92,7 @@ class Peer:
                 fname = parsed_string[1]
                 self.semaphore.acquire()
                 is_found, list_files = self.send_receive([FETCH, fname], self.server_host, self.server_port)
+                self.semaphore.release()
                 peer_host = None
                 if is_found:
                     if len(list_files) == 1:
@@ -106,7 +107,7 @@ class Peer:
                     print("FETCH succesfully.")
                 else:
                     print('No file in any client!')
-                self.semaphore.release()
+                
             
             
 
