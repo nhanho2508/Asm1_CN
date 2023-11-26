@@ -17,7 +17,7 @@ class Peer:
         self.server_port = server_port
         self.start_time = time.time()
         self.object_info = ObjectInfo(server_host, server_port)
-    def respond_ping(self):
+    def send(self):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         client_address = (self.host, 12000)
         client_socket.bind(client_address)
@@ -33,8 +33,8 @@ class Peer:
             print(f'Received ping from {server_address}')
             if request_type == 0xA0:
                 client_socket.sendto(create_snmp_response("public", request_id, self.start_time), server_address)
-    
-    def run(self):
+        
+    def receive(self):
         while True:
             command_line = input()
             parsed_string = command_line.split()
@@ -42,9 +42,31 @@ class Peer:
                 host_name = parsed_string[1]
                 self.semaphore.acquire()
                 REGISTERED_SUCCESSFULLY = self.object_info.register(host_name)
+                create_repo()
                 print("Congratulations you have been registered successfully.\n[*] You will now be put to the listening state.\n")
+                self.semaphore.release()
+            if (parsed_string[0] == "publish"):
+                repo_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"repo_test")
+                #create_manage_repo(repo_path)
+                host_name = parsed_string[1]
+                lname_path = parsed_string[2]
+                f_name = parsed_string[3]
+                make_publish_copy(lname_path,f_name,repo_path)
+                self.semaphore.acquire()
+                PUBLISH_SUCCESS = self.object_info.publish(host_name, f_name)
+                print("success" if(PUBLISH_SUCCESS) else "fail")
+                
                 self.semaphore.release()
             
             
+    def run(self):
+        receive_thread = Thread(target=self.receive, args=())
+        send_thread = Thread(target=self.send, args=())
+
+        # Start both threads
+        receive_thread.start()
+        send_thread.start()
+        
+        
 
             

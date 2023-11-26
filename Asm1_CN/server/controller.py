@@ -49,9 +49,19 @@ def ping(host_name):
         time.sleep(1)
 
     server_socket.close()
+    
+
+
 def register(conn, set_of_lists, set_of_host_name, host_name):  
     list_id = len(set_of_lists) + 1 
     set_of_host_name[list_id] = host_name
-    set_of_lists[list_id] = None  
+    set_of_lists[host_name] = []  
+    print("Register success")
     conn.send(pickle.dumps([list_id, True]))  
             
+def publish(conn, set_of_lists, set_of_host_name, host_name, filename, list_id):  
+    #list_id = len(set_of_lists) + 1
+    #set_of_host_name[list_id] = host_name
+    set_of_lists[host_name].append(filename)
+    print(f'"{set_of_lists}","{host_name}"\n')
+    conn.send(pickle.dumps([list_id, True]))  

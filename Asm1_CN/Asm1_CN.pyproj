@@ -4,8 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>bd257554-1042-458f-bd91-b7bc7e0ee2b2</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>main_client.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -33,6 +32,7 @@
     <Compile Include="server\server.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="peer\NewFolder1\" />
     <Folder Include="server\" />
     <Folder Include="peer\" />
   </ItemGroup>
