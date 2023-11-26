@@ -17,7 +17,7 @@ class Peer:
         self.server_port = server_port
         self.start_time = time.time()
         self.object_info = ObjectInfo(server_host, server_port)
-    def respond_ping(self):
+    def send(self):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         client_address = (self.host, 12000)
         client_socket.bind(client_address)
@@ -33,8 +33,8 @@ class Peer:
             print(f'Received ping from {server_address}')
             if request_type == 0xA0:
                 client_socket.sendto(create_snmp_response("public", request_id, self.start_time), server_address)
-
-    def run(self):
+        
+    def receive(self):
         while True:
             command_line = input()
             parsed_string = command_line.split()
@@ -55,8 +55,18 @@ class Peer:
                 self.semaphore.acquire()
                 PUBLISH_SUCCESS = self.object_info.publish(host_name, f_name)
                 print("success" if(PUBLISH_SUCCESS) else "fail")
+                
                 self.semaphore.release()
             
             
+    def run(self):
+        receive_thread = Thread(target=self.receive, args=())
+        send_thread = Thread(target=self.send, args=())
+
+        # Start both threads
+        receive_thread.start()
+        send_thread.start()
+        
+        
 
             
