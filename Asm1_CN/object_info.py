@@ -24,7 +24,7 @@ class ObjectInfo:
         result = self.send_receive([REGISTER, host_name, host])
         self.list_id, registered_successfully = result[0], result[1]
         return registered_successfully
-    def publish(self, host, filename):
-        result = self.send_receive([PUBLISH, host, filename, self.list_id])
+    def publish(self, filename):
+        result = self.send_receive([PUBLISH, filename, self.list_id])
         self.list_id, publish_successfully = result[0], result[1]
         return publish_successfully

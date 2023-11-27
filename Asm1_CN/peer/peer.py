@@ -48,13 +48,12 @@ class Peer:
             if (parsed_string[0] == "publish"):
                 repo_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"repo_test")
                 #create_manage_repo(repo_path)
-                host_name = parsed_string[1]
-                host = socket.gethostbyname(host_name)
-                lname_path = parsed_string[2]
-                f_name = parsed_string[3]
+                #host_name = parsed_string[1]
+                lname_path = parsed_string[1]
+                f_name = parsed_string[2]
                 make_publish_copy(lname_path,f_name,repo_path)
                 self.semaphore.acquire()
-                PUBLISH_SUCCESS = self.object_info.publish(host, f_name)
+                PUBLISH_SUCCESS = self.object_info.publish(f_name)
                 print("success" if(PUBLISH_SUCCESS) else "fail")
                 
                 self.semaphore.release()

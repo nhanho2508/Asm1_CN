@@ -48,13 +48,12 @@ class Server:
                 self.semaphore.release()
             if request[0] == PUBLISH:
                 print(100)
-                hostname = request[1]
-                filename = request[2]
-                list_id = request[3]
+                host = addr[0]
+                filename = request[1]
+                list_id = request[2]
                 self.semaphore.acquire()
-                publish(conn, self.setOfListsOfInfoFile, self.setOfHostName, hostname, filename, list_id)
+                publish(conn, self.setOfListsOfInfoFile, self.setOfHostName, host, filename, list_id)
                 print("Filename")
-                
                 self.semaphore.release()
                 print(self.setOfListsOfInfoFile)
                 print(self.setOfHostName)

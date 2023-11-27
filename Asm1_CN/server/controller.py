@@ -1,3 +1,4 @@
+from opcode import hasconst
 import pickle
 import socket
 from socket import AF_INET, SOCK_DGRAM
@@ -59,9 +60,13 @@ def register(conn, set_of_lists, set_of_host_name, host_name, host):
     print("Register success")
     conn.send(pickle.dumps([list_id, True]))  
             
-def publish(conn, set_of_lists, set_of_host_name, host_name, filename, list_id):  
+def publish(conn, set_of_lists, set_of_host_name, host, filename, list_id):  
     #list_id = len(set_of_lists) + 1
     #set_of_host_name[list_id] = host_name
+    host_name = None
+    for key, value in set_of_host_name.items():
+        if value == host:
+            host_name = key
     set_of_lists[host_name].append(filename)
     print(f'"{set_of_lists}","{host_name}"\n')
     conn.send(pickle.dumps([list_id, True]))  
