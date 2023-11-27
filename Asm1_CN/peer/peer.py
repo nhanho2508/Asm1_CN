@@ -41,7 +41,7 @@ class Peer:
             if (parsed_string[0] == "register"):
                 host_name = parsed_string[1]
                 self.semaphore.acquire()
-                REGISTERED_SUCCESSFULLY = self.object_info.register(host_name)
+                REGISTERED_SUCCESSFULLY = self.object_info.register(host_name, self.host)
                 create_repo()
                 print("Congratulations you have been registered successfully.\n[*] You will now be put to the listening state.\n")
                 self.semaphore.release()

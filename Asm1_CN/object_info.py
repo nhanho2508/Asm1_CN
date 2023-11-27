@@ -19,9 +19,9 @@ class ObjectInfo:
         return result
 
     
-    def register(self, host_name):
+    def register(self, host_name, host):
         assert self.list_id is None
-        result = self.send_receive([REGISTER, host_name, self.host])
+        result = self.send_receive([REGISTER, host_name, host])
         self.list_id, registered_successfully = result[0], result[1]
         return registered_successfully
     def publish(self, host, filename):
