@@ -25,9 +25,9 @@ def parse_snmp_response(snmp_response):
         if error_status == 0:
             return True
     return False
-def ping(host_name):
+def ping(host):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_address = (socket.gethostbyname(host_name), 12000)
+    client_address = (host, 12000)
     server_socket.settimeout(2.0)
     for i in range(5):  
         start_time = time.time()
@@ -52,9 +52,9 @@ def ping(host_name):
     
 
 
-def register(conn, set_of_lists, set_of_host_name, host_name):  
+def register(conn, set_of_lists, set_of_host_name, host_name, host):  
     list_id = len(set_of_lists) + 1 
-    set_of_host_name[list_id] = host_name
+    set_of_host_name[host_name] = host
     set_of_lists[host_name] = []  
     print("Register success")
     conn.send(pickle.dumps([list_id, True]))  

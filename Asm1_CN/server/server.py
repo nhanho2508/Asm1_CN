@@ -1,3 +1,4 @@
+
 from socket import *
 from server.controller import *
 from threading import *
@@ -5,6 +6,7 @@ import pickle
 from constants import*
 import threading #LAPTOP-VJDK2ECL
 import select
+
 class Server:
     def __init__(self, port, host, max_connect=5):
         self.host = host 
@@ -23,7 +25,8 @@ class Server:
             if (parsed_string[0] == "ping"):
                 host_name = parsed_string[1]
                 self.semaphore.acquire()
-                ping(host_name)
+                host = self.setOfHostName[host_name]
+                ping(host)
                 self.semaphore.release()
             if (parsed_string[0] == "discover"):
                 host_name = parsed_string[1]
@@ -32,14 +35,16 @@ class Server:
                 self.semaphore.release()
     def receive(self):
         while True:
-            (conn, addr) = self.sock.accept()  
+            (conn, addr) = self.sock.accept()
+            print("[*] Got a connection from ", addr[0], ":", addr[1])
             data = conn.recv(1024)
             request = pickle.loads(data)  
             print("[*] Request after unwrap", request)
             if request[0] == REGISTER:
                 hostname = request[1]
+                host = request[2]
                 self.semaphore.acquire()
-                register(conn, self.setOfListsOfInfoFile, self.setOfHostName, hostname)
+                register(conn, self.setOfListsOfInfoFile, self.setOfHostName, hostname, host)
                 self.semaphore.release()
             if request[0] == PUBLISH:
                 print(100)
@@ -67,5 +72,6 @@ class Server:
         send_thread.start()
 
         #print(self.setOfHostName) #For debug
+
         
-        
+

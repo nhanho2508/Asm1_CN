@@ -19,12 +19,12 @@ class ObjectInfo:
         return result
 
     
-    def register(self, hostname):
-        assert self.list_id is None 
-        result = self.send_receive([REGISTER, hostname])
+    def register(self, host_name):
+        assert self.list_id is None
+        result = self.send_receive([REGISTER, host_name, self.host])
         self.list_id, registered_successfully = result[0], result[1]
         return registered_successfully
-    def publish(self, hostname, filename):
-        result = self.send_receive([PUBLISH, hostname, filename, self.list_id])
+    def publish(self, host, filename):
+        result = self.send_receive([PUBLISH, host, filename, self.list_id])
         self.list_id, publish_successfully = result[0], result[1]
         return publish_successfully
