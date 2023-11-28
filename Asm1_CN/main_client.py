@@ -1,12 +1,11 @@
-import socket 
 from server.server import *
 from peer.peer import *
 if __name__ == '__main__':
-    host = gethostbyname(gethostname())
+    host = socket.gethostbyname(socket.gethostname())
     port = "8081"
     PORT = "8080"
     HOST = host
-    peer = Peer(int(port), host, int(PORT), HOST)
+    peer = Peer(host, int(port), HOST, int(PORT))
     """
     #Test for ping
     while True:
