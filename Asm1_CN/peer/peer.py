@@ -105,7 +105,7 @@ class Peer:
                 helper.send_file(conn, fname)
                 self.semaphore.release()
             if request[0] == PING:
-                helper.respond_ping(conn, addr, self.start_time)
+                helper.respond_ping(conn, addr)
 
     def send_command(self):
         while True:

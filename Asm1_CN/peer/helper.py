@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import pickle
 import socket
 import struct
@@ -5,17 +6,17 @@ import time
 from constants import *
 # import os
 
-def create_snmp_response(community, request_id, start_time):
-    version = 0x00  # SNMPv1
-    request_type = 0xA0  # GET PDU
+def create_snmp_response():
+    version = 0x00 
+    community = "public"
+    request_type = 0xA0
+    request_id = 0
     error_status = 0
     error_index = 0 
-    null_byte = 0
     PDU_type = 0
-   
-    end_time = time.time()
-    snmp_packet = pickle.dumps([version, community, request_type, request_id, error_status, error_index, null_byte, PDU_type, end_time - start_time])
-
+    name = "IP"
+    value = NULL
+    snmp_packet = pickle.dumps([version, community, PDU_type, request_type, request_id, error_status, error_index, name, value])
     return snmp_packet
 
 def send_file(conn, file_name):
@@ -36,10 +37,9 @@ def send_file(conn, file_name):
     except Exception as e:
         return False
 
-def respond_ping(conn, addr, start_time):
+def respond_ping(conn, addr):
     print(f'[*] Received ping from {addr[0]} : {addr[1]}')
-    request_id = 1
-    conn.send(pickle.dumps([PING_STATUS, create_snmp_response("public", request_id, start_time), addr[0]]))
+    conn.send(pickle.dumps([PING_STATUS, addr[0]]))
 
 def make_publish_copy(lname_path, fname):
     fname_path = os.path.join(REPO_PATH, fname)

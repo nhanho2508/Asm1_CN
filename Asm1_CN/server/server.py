@@ -2,6 +2,7 @@ import socket
 import server.controller as controller
 import threading
 import pickle
+import time
 from constants import *
 import json
 
@@ -67,9 +68,8 @@ class Server:
                 host_name = parsed_string[1]
                 self.semaphore.acquire()
                 ping_status = self.ping(host_name)
-                print("Ping response:")
-                # TODO: handle ping_status
-                #
+                #print("Ping response:")
+                #TODO: handle ping_status
                 self.semaphore.release()
 
             elif (parsed_string[0] == "discover"):
@@ -155,6 +155,30 @@ class Server:
         # assert self.list_id is None
         host = Server.setOfHostInfo.get(username)[0]
         port = Server.setOfHostInfo.get(username)[1] + 1
-        ping_request = controller.create_snmp_request("public")
-        result = self.send_receive([PING, ping_request], host, port)
-        return result
+        #ping_request = controller.create_snmp_request()
+        #count_byte = len(ping_request)
+        #print(count_byte, "byte")
+        #result = self.send_receive([PING], host, port)
+        receive = 0;
+        RTT_sum = 0;
+        for i in range (5):  
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            #sock.bind((self.host, self.port))
+            sock.settimeout(5)
+            try:
+                sock.connect((host, port))
+                time_start = time.time()
+                sock.send(pickle.dumps([PING]))
+                result = pickle.loads(sock.recv(BUFFER))
+                time_end = time.time()  # receive the response
+                print(f"Ping Successful. RTT = {time_end - time_start:.5f}")
+                receive = receive + 1
+                RTT_sum = RTT_sum + time_end - time_start
+                sock.close()
+            except (socket.timeout, WindowsError):
+                print("Request time out")
+                sock.close()
+                   
+        print(f"Ping statistic: Send = 5, Receive = {receive}, Lost = {5 - receive}")
+        print(f"RTT average {(RTT_sum/receive):.5f}")
+           
