@@ -7,6 +7,7 @@ from server.server import Server
 import threading
 import pickle
 import time
+import shlex
 
 class Peer:
     def __init__(self, host='localhost', port=PEER_PORT, server_host=0, server_port=SERVER_PORT, max_connect = 5):
@@ -115,7 +116,8 @@ class Peer:
     def send_command(self):
         while True:
             command_line = input('>> ')
-            parsed_string = command_line.split()
+            parsed_string = shlex.split(command_line)
+            # parsed_string = command_line.split()
             if (parsed_string[0] == "connect"):
                 server_ip = parsed_string[1]
                 self.server_host = server_ip
