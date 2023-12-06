@@ -9,7 +9,7 @@ import pickle
 import time
 
 class Peer:
-    def __init__(self, host='10.128.35.199', port=PEER_PORT, server_host=0, server_port=SERVER_PORT, max_connect = 5):
+    def __init__(self, host='localhost', port=PEER_PORT, server_host=0, server_port=SERVER_PORT, max_connect = 5):
         self.username = ''
         self.host = host
         #--- DEBUG ONLY ---#
@@ -211,7 +211,7 @@ class Peer:
         # Start both threads
         listen_thread.start()
         send_thread.start()
-   		listen_thread.join()
+        listen_thread.join()
         send_thread.join()    
     #--- LIST OF COMMAND FUNCTION ---#
     
