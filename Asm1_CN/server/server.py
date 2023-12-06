@@ -86,12 +86,14 @@ class Server:
 
     def accept_connect(self):
         while True:
-            (conn, addr) = self.lst_sock.accept()  
-            print("[*] Got a connection from ", addr[0], ":", addr[1])
-            self.has_connect = True
-            listen_thread = threading.Thread(target=self.listen, args=(conn,addr))
-            listen_thread.start()
-
+            try:
+                (conn, addr) = self.lst_sock.accept()  
+                print("[*] Got a connection from ", addr[0], ":", addr[1])
+                self.has_connect = True
+                listen_thread = threading.Thread(target=self.listen, args=(conn, addr))
+                listen_thread.start()
+            except socket.error as e:
+                print("Error accepting connection:", e)
     def listen(self,conn,addr):
         while True:
             data = conn.recv(BUFFER)  
@@ -148,6 +150,8 @@ class Server:
         # Start both threads
         accept_thread.start()
         send_thread.start()
+        accept_thread.join()
+        send_thread.join()
 
     #--- LIST OF COMMAND FUNCTION ---#
     
@@ -180,5 +184,5 @@ class Server:
                 sock.close()
                    
         print(f"Ping statistic: Send = 5, Receive = {receive}, Lost = {5 - receive}")
-        print(f"RTT average {(RTT_sum/receive):.5f}")
+        # print(f"RTT average {(RTT_sum/receive):.5f}")
            
