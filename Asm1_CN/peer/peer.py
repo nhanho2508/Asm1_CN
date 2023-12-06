@@ -90,7 +90,16 @@ class Peer:
             return False
 
     #--- COMMAND HANDLING ---#
-
+    def handle_listen(self, conn, addr):
+        request = pickle.loads(conn.recv(BUFFER))  # unwrap the request
+        if request[0] == SEND:
+                fname = request[1]
+                self.semaphore.acquire()
+                helper.send_file(conn, fname)
+                self.semaphore.release()
+            
+        if request[0] == PING:
+                helper.respond_ping(conn, addr)
     def listen(self):
         self.lst_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.lst_sock.bind((self.host, self.port + 1))
@@ -98,14 +107,10 @@ class Peer:
         while True:
             (conn, addr) = self.lst_sock.accept()
             # print("[*] Got a connection from ", addr[0], ":", addr[1])
-            request = pickle.loads(conn.recv(BUFFER))  # unwrap the request
-            if request[0] == SEND:
-                fname = request[1]
-                self.semaphore.acquire()
-                helper.send_file(conn, fname)
-                self.semaphore.release()
-            if request[0] == PING:
-                helper.respond_ping(conn, addr)
+            thread = threading.Thread(target=self.handle_listen, args = (conn, addr))
+            thread.start()
+            # thread.join()
+        
 
     def send_command(self):
         while True:
@@ -206,7 +211,10 @@ class Peer:
         # Start both threads
         listen_thread.start()
         send_thread.start()
-
+        listen_thread.join()
+        send_thread.join()
+        
+        
     
     #--- LIST OF COMMAND FUNCTION ---#
     

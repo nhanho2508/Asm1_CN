@@ -148,6 +148,10 @@ class Server:
         # Start both threads
         accept_thread.start()
         send_thread.start()
+        accept_thread.join()
+        send_thread.join()
+        
+        
 
     #--- LIST OF COMMAND FUNCTION ---#
     
