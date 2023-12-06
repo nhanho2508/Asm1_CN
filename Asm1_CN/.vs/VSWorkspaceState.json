@@ -1,10 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\peer",
     "\\repo",
-    "\\server"
+    "\\server",
+    "\\server\\__pycache__"
   ],
-  "SelectedNode": "\\main_client.py",
+  "SelectedNode": "\\main_server.py",
   "PreviewInSolutionExplorer": false
 }
