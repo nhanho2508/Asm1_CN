@@ -146,7 +146,7 @@ class Peer:
 
     def send_command(self):
         while True:
-            if(self.is_GUI): 
+			if(self.is_GUI): 
                 time.sleep(0.5)
                 self.wait = True
             if self.command_line =="": 
@@ -155,8 +155,7 @@ class Peer:
                 else:
                     continue
             parsed_string = shlex.split(self.command_line)
-            self.command_line = ""
-            # parsed_string = command_line.split()
+            self.command_line = ""            # parsed_string = command_line.split()
             if (parsed_string[0] == "connect"):
                 server_ip = parsed_string[1]
                 self.server_host = server_ip
@@ -266,7 +265,9 @@ class Peer:
                 self.semaphore.acquire()
                 publish_status = self.publish(lname_path, f_name)
                 # print("success" if(publish_successfully) else "fail")
-                if publish_status[1]:
+                if publish_status is None or publish_status is False:
+                    print("[*] Error: PUBLISH failed! You already publish this file name, please choose another name if you want publish it.")
+                elif publish_status[1]:
                     print("[*] PUBLISH successfully.")
                     self.success_message = "[*] PUBLISH successfully."
                     self.wait = False
@@ -304,8 +305,11 @@ class Peer:
     
     def publish(self, lname, fname):
         helper.create_repo()
-        self.error_message=helper.make_publish_copy(lname,fname)
-        result = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
+		check_existed_fname=helper.make_publish_copy(lname,fname)
+        if(not check_existed_fname  ):
+        	self.error_message="The file is already exist in repo"
+            return False
+        print('publish peer')        result = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
         return result
 
             
