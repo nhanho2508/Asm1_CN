@@ -116,7 +116,10 @@ class Peer:
     def send_command(self):
         while True:
             command_line = input('>> ')
-            parsed_string = shlex.split(command_line)
+            if (command_line):
+                parsed_string = shlex.split(command_line)
+            else:
+                continue
             # parsed_string = command_line.split()
             if (parsed_string[0] == "connect"):
                 server_ip = parsed_string[1]
@@ -200,7 +203,9 @@ class Peer:
                 self.semaphore.acquire()
                 publish_status = self.publish(lname_path, f_name)
                 # print("success" if(publish_successfully) else "fail")
-                if publish_status[1]:
+                if publish_status is None or publish_status is False:
+                    print("[*] Error: PUBLISH failed! You already publish this file name, please choose another name if you want publish it.")
+                elif publish_status[1]:
                     print("[*] PUBLISH successfully.")
                 else:
                     print("[*] Error: PUBLISH failed!")
@@ -233,7 +238,10 @@ class Peer:
     
     def publish(self, lname, fname):
         helper.create_repo()
-        helper.make_publish_copy(lname,fname)
+        check_existed_fname=helper.make_publish_copy(lname,fname)
+        if(not check_existed_fname  ):
+            return False
+        print('publish peer')
         result = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
         return result
 

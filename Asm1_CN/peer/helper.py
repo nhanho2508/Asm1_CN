@@ -44,8 +44,7 @@ def respond_ping(conn, addr):
 def make_publish_copy(lname_path, fname):
     fname_path = os.path.join(REPO_PATH, fname)
     if os.path.exists(fname_path):
-        print("[*] The file already exists in the repo.")
-        return
+        return False
     os.chmod(lname_path, 0o400) #get permission
     with open(lname_path, 'rb') as source_file:
         with open(fname_path, 'wb+') as destination_file:
@@ -53,7 +52,7 @@ def make_publish_copy(lname_path, fname):
             while True:
                 chunk = source_file.read(chunk_size)
                 if not chunk:
-                    break
+                    return True
                 destination_file.write(chunk)
     # print("success make copy to repo")
 
