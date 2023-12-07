@@ -14,7 +14,10 @@ class Peer:
         self.username = ''
         self.host = host
         #--- DEBUG ONLY ---#
-        self.port = int(input("Enter port: "))
+        if(port!=8081):
+            self.port = port
+        else:
+            self.port = int(input('Enter port: '))
         #------------------#
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
         self.sock.bind((self.host, self.port))
@@ -25,7 +28,17 @@ class Peer:
         self.start_time = time.time()
         self.is_online = False
         self.max_connect = max_connect
+        ###########HELPING ATTRIBUTE FOR GUI############
+        self.error_message = ""
+        self.success_message = f"[*] Client is ready on host address {self.host}, port {self.port}"
+        self.command_line = ""
+        self.is_multi_peer= False
+        self.is_GUI = False
         print("[*] Client is ready on host address ", self.host, ", port", self.port)
+        self.sender_username = ""
+        self.list_peer = None
+        self.wait = True
+
     
     #--- REQUEST HANDLING HELPER ---#
 
@@ -46,6 +59,24 @@ class Peer:
     #         print(f'[*] Received ping from {server_address}')
     #         if request_type == 0xA0:
     #             client_socket.sendto(helper.create_snmp_response("public", request_id, self.start_time), server_address)
+    ###############################################################################
+    def set_GUI (self):
+        self.is_GUI=True
+    def get_info (self):
+        return self.success_message
+    def get_error(self):
+        return self.error_message
+    def reset_info (self):
+        self.success_message = ""
+    def reset_error (self):
+        self.error_message = ""
+    def set_command (self, command_line):
+        self.command_line = command_line
+    def get_multi_peer(self):
+        return self.is_multi_peer
+    def get_list_peer (self):
+        return self.list_peer
+    ###############################################################################
 
     def send_receive(self, message, host, port):
         # print(host, port)
@@ -76,6 +107,7 @@ class Peer:
             new_sock.connect((sender_host, sender_port))
             new_sock.send(pickle.dumps([SEND,fname]))
             print("[**] Downloading file...")
+            self.success_message = "[**] Downloading file..."
             file_path = os.path.join(REPO_PATH, fname)
             with open(file_path, 'wb') as f:
                 while True:
@@ -98,7 +130,6 @@ class Peer:
                 self.semaphore.acquire()
                 helper.send_file(conn, fname)
                 self.semaphore.release()
-            
         if request[0] == PING:
                 helper.respond_ping(conn, addr)
     def listen(self):
@@ -115,8 +146,16 @@ class Peer:
 
     def send_command(self):
         while True:
-            command_line = input('>> ')
-            parsed_string = shlex.split(command_line)
+            if(self.is_GUI): 
+                time.sleep(0.5)
+                self.wait = True
+            if self.command_line =="": 
+                if( not self.is_GUI):
+                    self.command_line = input('>> ')
+                else:
+                    continue
+            parsed_string = shlex.split(self.command_line)
+            self.command_line = ""
             # parsed_string = command_line.split()
             if (parsed_string[0] == "connect"):
                 server_ip = parsed_string[1]
@@ -128,7 +167,8 @@ class Peer:
                 self.sock.connect((server_ip, server_port))
                 print("[*] Client address:", self.host, ":", self.port)
                 print("[*] Client connected with server at:", server_ip, ":", server_port)
-
+                self.success_message = f"[*] Client address: {self.host}:{self.port}\n[*] Client connected with server at: {self.server_host}:{self.server_port}"
+                self.wait=False
             elif (parsed_string[0] == "register"):
                 username = parsed_string[1]
                 password = parsed_string[2]
@@ -139,13 +179,17 @@ class Peer:
                     self.username = username
                     self.password = password
                     print("[*] REGISTER successfully.")
+                    self.success_message = "[*] REGISTER successfully."
                 elif register_status[1] and register_status[2] == 0:
                     print("[*] The username already exists.")
+                    self.error_message = "[*] The username already exists."
                 else:
                     print("[*] Error: REGISTER failed!")
+                    self.error_message = "[*] Error: REGISTER failed!"
 
                 # print("[*] Congratulations you have been registered successfully.\n[*] You will now be put to the listening state.")
                 self.semaphore.release()
+                self.wait = False
 
             elif (parsed_string[0] == "login"):
                 username = parsed_string[1]
@@ -157,13 +201,18 @@ class Peer:
                     self.username = username
                     self.password = password
                     print("[*] LOGIN successfully.")
+                    self.success_message="[*] LOGIN successfully."
                 elif login_status[1] and login_status[2] == 0:
                     print("[*] Invalid password.")
+                    self.error_message= "[*] Invalid password."
                 elif login_status[1] and login_status[2] == -1:
                     print("[*] The username doesn't exist.")
+                    self.error_message= "[*] The username doesn't exist."
                 else:
                     print("[*] Error: LOGIN failed!")
+                    self.error_message ="[*] LOGIN failed!"
                 self.semaphore.release()
+                self.wait = False
 
             elif (parsed_string[0] == "fetch"):
                 fname = parsed_string[1]
@@ -174,23 +223,40 @@ class Peer:
                 if fetch_status[1] and fetch_status[2]:
                     list_peers = fetch_status[3]
                     if len(list_peers) == 1:
+                        self.is_multi_peer = False
                         for key in list_peers:
                             sender_username = key
                     elif len(list_peers) > 1:
-                        print('[**] List of peers:')
-                        for key in list_peers:
-                            print(key)
-                        sender_username = input('Which peer do you want to choose the file from: ')
+                        if(not self.is_GUI):
+                            print('[**] List of peers:')
+                            for key in list_peers:
+                                print(key)
+                            sender_username = input('Which peer do you want to choose the file from: ')
+                        else:
+                            self.success_message = "Please enter the peer you want to choose the file from"
+                            self.list_peer = list_peers
+                            self.is_multi_peer = True
+                            self.wait = False
+                            while self.sender_username == "":
+                                time.sleep(0.5)
+                                self.wait = True
+                            sender_username = self.sender_username
+                            self.sender_username = ""
                     download_status = self.download_file(list_peers[sender_username], fname)
                     update_status = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
                     if download_status and update_status[1]:
-                        print("[*] DOwNLOAD succesfully.")
+                        print("[*] DOWNLOAD succesfully.")
+                        self.success_message = "[*] DOWNLOAD succesfully."
                     else:
                         print("[*] Error: DOWNLOAD failed!")
+                        self.error_message = "[*] Error: DOWNLOAD failed!"
                 elif fetch_status[1] and not fetch_status[2]:
                     print('[*] No such file in any client!')
+                    self.error_message = '[*] No such file in any client!'
                 else:
                     print('[*] Error: FETCH failed!')
+                    self.error_message = '[*] Error: FETCH failed!'
+                self.wait = False
 
             elif (parsed_string[0] == "publish"):
                 # repo_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"repo_test")
@@ -202,10 +268,15 @@ class Peer:
                 # print("success" if(publish_successfully) else "fail")
                 if publish_status[1]:
                     print("[*] PUBLISH successfully.")
+                    self.success_message = "[*] PUBLISH successfully."
+                    self.wait = False
                 else:
                     print("[*] Error: PUBLISH failed!")
+                    self.error_message = "[*] Error: PUBLISH failed!"
+                    self.wait = False
                 self.semaphore.release()
-    
+                self.wait = False
+
     def run(self):
         listen_thread = threading.Thread(target=self.listen, args=())
         send_thread = threading.Thread(target=self.send_command, args=())
@@ -233,7 +304,7 @@ class Peer:
     
     def publish(self, lname, fname):
         helper.create_repo()
-        helper.make_publish_copy(lname,fname)
+        self.error_message=helper.make_publish_copy(lname,fname)
         result = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
         return result
 

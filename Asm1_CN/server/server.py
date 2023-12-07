@@ -18,10 +18,13 @@ class Server:
             Server.setOfHostFileLists = json.load(f1)
         f1.close()
 
-    def __init__(self, host='localhost', port=SERVER_PORT, max_connect=5):
+    def __init__(self, host='localhost', port=SERVER_PORT, is_GUI = False,max_connect=5):
         self.host = host
         #--- DEBUG ONLY ---#
-        self.port = int(input('Enter port: '))
+        if not is_GUI:
+            self.port = int(input('Enter port: '))
+        else: 
+            self.port = port
         #------------------# 
         # self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
         # self.sock.bind((self.host, self.port))
@@ -34,6 +37,13 @@ class Server:
         self.init_db()
         print("[*] Server address:", self.host, ", port", self.port)
         print("[*] Server started listening on host:", self.host, ", port", self.port+1)
+        ##############HELPER ATTRIBUTE FOR GUI##################
+        self.is_GUI = is_GUI
+        self.info = f"[*] Server address: {self.host}, port {self.port}\n [*] Server started listening on host: {self.host} , port {self.port+1}"
+        self.error = ""
+        self.command_line = ""
+        self.info_renew = False
+        self.error_renew = False
 
     
     def updateHostInfo(self):
@@ -62,8 +72,14 @@ class Server:
 
     def send_command(self):
         while True:
-            command_line = input('>> ')
+            if(not self.is_GUI):
+                command_line = input('>> ')
+            else: 
+                command_line = self.command_line
+            if command_line == "":
+                continue
             parsed_string = command_line.split()
+            self.command_line=""
             if (parsed_string[0] == "ping"):
                 host_name = parsed_string[1]
                 self.semaphore.acquire()
@@ -77,11 +93,16 @@ class Server:
                 self.semaphore.acquire()
                 result = Server.setOfHostFileLists.get(username)
                 print(f"User {username}'s files: ",result)
+                self.info=f"User {username}'s files: {result}"
+                self.info_renew=True
                 self.semaphore.release()
 
             elif (parsed_string[0] == "host_info"):
                 self.semaphore.acquire()
+                self.info = str(Server.setOfHostInfo)
                 print(Server.setOfHostInfo)
+               
+                self.info_renew=True
                 self.semaphore.release()
 
     def accept_connect(self):
@@ -89,16 +110,22 @@ class Server:
             try:
                 (conn, addr) = self.lst_sock.accept()  
                 print("[*] Got a connection from ", addr[0], ":", addr[1])
+                self.info=f"[*] Got a connection from {addr[0]}: {addr[1]}"
+                self.info_renew=True
                 self.has_connect = True
                 listen_thread = threading.Thread(target=self.listen, args=(conn, addr))
                 listen_thread.start()
             except socket.error as e:
                 print("Error accepting connection:", e)
+                self.error=f"Error accepting connection: {e}"
+                self.error_renew= True
     def listen(self,conn,addr):
         while True:
             data = conn.recv(BUFFER)  
             request = pickle.loads(data)
             print("[*] Request after unwrap: ", request)
+            self.info=f"[*] Request after unwrap: {request}"
+            self.info_renew=True
 
             if request[0] == REGISTER:
                 username = request[1]
@@ -175,13 +202,24 @@ class Server:
                 result = pickle.loads(sock.recv(BUFFER))
                 time_end = time.time()  # receive the response
                 print(f"Ping Successful. RTT = {time_end - time_start:.5f}")
+                self.info=f"Ping Successful. RTT = {time_end - time_start:.5f}"
+                self.info_renew = True
                 receive = receive + 1
                 RTT_sum = RTT_sum + time_end - time_start
                 sock.close()
             except (socket.timeout, WindowsError):
                 print("Request time out")
+                self.info="Request time out"
+                self.info_renew = True
                 sock.close()
-                   
+            if self.is_GUI: time.sleep(0.5)
         print(f"Ping statistic: Send = 5, Receive = {receive}, Lost = {5 - receive}")
-        # print(f"RTT average {(RTT_sum/receive):.5f}")
+        self.info = f"Ping statistic: Send = 5, Receive = {receive}, Lost = {5 - receive}"
+        self.info_renew=True
+        if self.is_GUI: time.sleep(0.5)
+        if receive!=0:
+            print(f"RTT average {(RTT_sum/receive):.5f}")
+            self.info = f"RTT average {(RTT_sum/receive):.5f}"
+            self.info_renew=True
+
            

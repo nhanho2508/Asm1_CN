@@ -45,7 +45,7 @@ def make_publish_copy(lname_path, fname):
     fname_path = os.path.join(REPO_PATH, fname)
     if os.path.exists(fname_path):
         print("[*] The file already exists in the repo.")
-        return
+        return "[*] The file already exists in the repo."
     os.chmod(lname_path, 0o400) #get permission
     with open(lname_path, 'rb') as source_file:
         with open(fname_path, 'wb+') as destination_file:
@@ -55,7 +55,6 @@ def make_publish_copy(lname_path, fname):
                 if not chunk:
                     break
                 destination_file.write(chunk)
-    # print("success make copy to repo")
 
 # def create_manage_repo(repo_path):
 #     manage_repo_name = "manage.repo"
