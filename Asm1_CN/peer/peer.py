@@ -146,7 +146,7 @@ class Peer:
 
     def send_command(self):
         while True:
-			if(self.is_GUI): 
+            if(self.is_GUI): 
                 time.sleep(0.5)
                 self.wait = True
             if self.command_line =="": 
@@ -305,11 +305,12 @@ class Peer:
     
     def publish(self, lname, fname):
         helper.create_repo()
-		check_existed_fname=helper.make_publish_copy(lname,fname)
+        check_existed_fname=helper.make_publish_copy(lname,fname)
         if(not check_existed_fname  ):
-        	self.error_message="The file is already exist in repo"
+            self.error_message="The file is already exist in repo"
             return False
-        print('publish peer')        result = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
+        print('publish peer')        
+        result = self.send_receive([PUBLISH, self.username, fname], self.server_host, self.server_port)
         return result
 
             
