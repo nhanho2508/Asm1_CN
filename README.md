@@ -37,6 +37,7 @@ WELCOME TO OUR APPLICATION --- SIMPLE FILE SHARING.
     10. Log out of your account: `logout`.
     11. Disconnect from the server: `disconnect`.
 --------------------- When using the GUI --------------------
+
 -- Run the server 
 
     1. Execute the file `GUI_server`
