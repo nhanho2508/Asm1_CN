@@ -55,7 +55,7 @@ def register():
             lbl2.config(text=f"Welcome back, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
-            root.geometry("800x600")
+            root.geometry("800x620")
             main_frame.pack()
 def login():
     username = username_entry.get()
@@ -72,7 +72,7 @@ def login():
             lbl2.config(text=f"Welcome back, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
-            root.geometry("800x600")
+            root.geometry("800x620")
             main_frame.pack()
 def connect():
     server_ip = server_ip_entry.get()
@@ -256,7 +256,7 @@ tk.Label(connect_frame, text="Server's Port:").grid(row=2, column=0, sticky="e",
 server_port_entry = tk.Entry(connect_frame)
 server_port_entry.grid(row=2, column=1, pady=2)
 
-connect_button = tk.Button(connect_frame, text="Connect", command=connect)
+connect_button = tk.Button(connect_frame, text="Connect", command=connect, bg="forestgreen", fg="white")
 connect_button.grid(row=3, column=1,pady=2)
 connect_frame.pack(padx=20, pady=2)
 # Tạo frame cho phần login
@@ -271,12 +271,12 @@ tk.Label(login_frame, text="Password:").grid(row=2, column=0, sticky="e", padx=3
 password_entry = tk.Entry(login_frame, show="*")
 password_entry.grid(row=2, column=1,padx=3,pady=2)
 
-login_button = tk.Button(login_frame, text="Login", command=login, width=10)
+login_button = tk.Button(login_frame, text="Login", command=login, width=10, bg="gainsboro", fg="black")
 login_button.grid(row=1, column=2, padx=3,pady=2)
-register_button = tk.Button(login_frame, text="Register", command=register, width=10)
+register_button = tk.Button(login_frame, text="Register", command=register, width=10, bg="darkslateblue", fg="white")
 register_button.grid(row=2, column=2,padx=3,pady=2)
 tk.Label(login_frame, text="Disconnect to connect another server?").grid(row=3, column=0, sticky="e", padx=3,pady=2,columnspan=2)
-disconnect_button = tk.Button(login_frame, text="Disconnect", command=disconnect2, width=10)
+disconnect_button = tk.Button(login_frame, text="Disconnect", command=disconnect2, width=10, bg="brown3")
 disconnect_button.grid(row=3, column=2,padx=3,pady=2)
 
 
@@ -288,7 +288,7 @@ tk.Label(main_frame, text="Publish your file here",font = 'arial 10 bold', fg='b
 tk.Label(main_frame, text="Path: ",anchor='w').grid(row=1, column=0, sticky="w")
 entry_path = tk.Entry(main_frame, width=50)
 entry_path.grid(row=1, column=1, padx=10, pady=2)
-button_browse = tk.Button(main_frame, text="Browse", command=browse_file)
+button_browse = tk.Button(main_frame, text="Browse", command=browse_file, bg="goldenrod3", fg="black")
 button_browse.grid(row=1, column=2, padx=10, pady=2)
 
 tk.Label(main_frame, text="Save in your client's repository as: ",anchor='w').grid(row=2, column=0, sticky="w")
@@ -296,14 +296,14 @@ entry_name = tk.Entry(main_frame, width=50)
 entry_name.grid(row=2, column=1, padx=10, pady=2)
 
 # Tạo nút "Publish File"
-button_publish = tk.Button(main_frame, text="Publish", command=publish)
+button_publish = tk.Button(main_frame, text="Publish", command=publish, bg="darkslateblue", fg="white")
 button_publish.grid(row=2, column=2, padx=10, pady=2)
 
 sub_frame2 = tk.Frame(main_frame, padx=0, pady=2)
-tk.Label(sub_frame2, text="Replace the original file?",fg='red',anchor='w').grid(row=3, column=0, sticky="w")
-button_yes = tk.Button(sub_frame2, text="Yes", command=replaceYes)
+tk.Label(sub_frame2, text="Replace the original file?",anchor='w',font='arial 8 bold').grid(row=3, column=0, sticky="w")
+button_yes = tk.Button(sub_frame2, text="Yes", command=replaceYes, fg="green3")
 button_yes.grid(row=3, column=1, padx=10, pady=2)
-button_no = tk.Button(sub_frame2, text="No", command=replaceNo)
+button_no = tk.Button(sub_frame2, text="No", command=replaceNo, fg="brown3")
 button_no.grid(row=3, column=2, padx=10, pady=2)
 #-----------------------------SEARCH --------------------------------
 # -----------------------------------------------------------
@@ -312,7 +312,7 @@ tk.Label(main_frame, text="Search a file here",font = 'arial 10 bold', fg='black
 tk.Label(main_frame, text="Input file name you want to search",anchor='w').grid(row=5, column=0, sticky="w")
 entry_search = tk.Entry(main_frame, width=50)
 entry_search.grid(row=5, column=1, padx=10, pady=2)
-button_search = tk.Button(main_frame, text="Search", command=search)
+button_search = tk.Button(main_frame, text="Search", command=search, bg="darkslateblue", fg="white")
 button_search.grid(row=5, column=2, padx=10, pady=2)
 # -----------------------------FETCH----------------------------
 tk.Label(main_frame, text="Fetch a file here",font = 'arial 10 bold', fg='black').grid(row=6, columnspan=3,pady=2)
@@ -323,15 +323,15 @@ entry_fetch.grid(row=7, column=1, padx=10, pady=2)
 tk.Label(main_frame, text="Store in your repository as name: ",anchor='w').grid(row=8, column=0, sticky="w")
 entry_name_store = tk.Entry(main_frame, width=50)
 entry_name_store.grid(row=8, column=1, padx=10, pady=2)
-button_fetch = tk.Button(main_frame, text="Fetch", command=fetch)
+button_fetch = tk.Button(main_frame, text="Fetch", command=fetch, bg="darkslateblue", fg="white")
 button_fetch.grid(row=7, column=2, padx=10, pady=2, rowspan= 2 )
 ###########
 # - Handle trùng tên file
 sub_frame3 = tk.Frame(main_frame, padx=0, pady=2)
-tk.Label(sub_frame3, text="Replace the original file?",anchor='w').grid(row=8, column=0, sticky="w")
-button_yes3 = tk.Button(sub_frame3, text="Yes",fg='red', command=replaceYes3)
+tk.Label(sub_frame3, text="Replace the original file?",anchor='w',font='arial 8 bold').grid(row=8, column=0, sticky="w")
+button_yes3 = tk.Button(sub_frame3, text="Yes", command=replaceYes3, fg="green3")
 button_yes3.grid(row=8, column=1, padx=10, pady=2)
-button_no3 = tk.Button(sub_frame3, text="No", command=replaceNo3)
+button_no3 = tk.Button(sub_frame3, text="No", command=replaceNo3, fg="brown3")
 button_no3.grid(row=8, column=2, padx=10, pady=2)
 # -- Multi peer to fetch
 sub_frame = tk.Frame(main_frame, padx=0, pady=2)
@@ -346,36 +346,37 @@ button_select.grid(row=9, column=1, padx=10, pady=2)
 #-------------------------- View ----------------------------
 # -----------------------------------------------------------
 tk.Label(main_frame, text="View all files in your publish repository",anchor='w').grid(row=10, column=0, sticky="w")
-button_view = tk.Button(main_frame, text="View", command=View)
+button_view = tk.Button(main_frame, text="View", command=View, bg="goldenrod3", fg="black")
 button_view.grid(row=10, column=1, padx=10, pady=2)
 
 # ---------------------------Delete ---------------------------
 # -------------------------------------------------------------
-tk.Label(main_frame, text="Input file name you want to delete in your publish repository",anchor='w').grid(row=11, column=0, sticky="w")
+tk.Label(main_frame, text="Delete a file here",font = 'arial 10 bold', fg='black').grid(row=11, columnspan=3,pady=2)
+tk.Label(main_frame, text="Input file name you want to delete in your publish repository",anchor='w').grid(row=12, column=0, sticky="w")
 entry_delete = tk.Entry(main_frame, width=50)
-entry_delete.grid(row=11, column=1, padx=10, pady=2)
-button_delete = tk.Button(main_frame, text="Delete", command=Delete)
-button_delete.grid(row=11, column=2, padx=10, pady=2)
+entry_delete.grid(row=12, column=1, padx=10, pady=2)
+button_delete = tk.Button(main_frame, text="Delete", command=Delete, bg="darkslateblue", fg="white")
+button_delete.grid(row=12, column=2, padx=10, pady=2)
 # -------------------------- 3 Button --------------------------
 # ----------------------------------------------------------------
-button_changepass = tk.Button(main_frame, text="Change Your Password", command=changepass)
-button_changepass.grid(row=12, column=0, padx=10, pady=2)
-button_logout = tk.Button(main_frame, text="Log Out", command=LogOut)
-button_logout.grid(row=12, column=2, padx=10, pady=2)
-button_disconnect = tk.Button(main_frame, text="Disconnect from Server", command=Disconnect, bg="red", fg="white" )
-button_disconnect.grid(row=12, column=1, padx=10, pady=2)
+button_changepass = tk.Button(main_frame, text="Change Your Password", command=changepass, bg="white", fg="black")
+button_changepass.grid(row=13, column=0, padx=10, pady=2)
+button_logout = tk.Button(main_frame, text="Log Out", command=LogOut, bg="gray30", fg="white")
+button_logout.grid(row=13, column=2, padx=10, pady=2)
+button_disconnect = tk.Button(main_frame, text="Disconnect from Server", command=Disconnect, bg="brown", fg="white" )
+button_disconnect.grid(row=13, column=1, padx=10, pady=2)
 ##Subframe for change pass word
 sub_frame4 = tk.Frame(main_frame, padx=0, pady=5)
-tk.Label(sub_frame4, text="Change your password here",font = 'arial 10 bold', fg='black').grid(row=17, columnspan=3,pady=2)
-tk.Label(sub_frame4, text="Old password: ",anchor='w').grid(row=18, column=0, sticky="w")
+tk.Label(sub_frame4, text="Change your password here",font = 'arial 10 bold', fg='black').grid(row=18, columnspan=3,pady=2)
+tk.Label(sub_frame4, text="Old password: ",anchor='w').grid(row=19, column=0, sticky="w")
 entry_old = tk.Entry(sub_frame4, width=50,show="*")
-entry_old.grid(row=18, column=1, padx=10, pady=2)
-tk.Label(sub_frame4, text="New password: ",anchor='w').grid(row=19, column=0, sticky="w")
+entry_old.grid(row=19, column=1, padx=10, pady=2)
+tk.Label(sub_frame4, text="New password: ",anchor='w').grid(row=20, column=0, sticky="w")
 entry_new = tk.Entry(sub_frame4, width=50, show="*")
-entry_new.grid(row=19, column=1, padx=10, pady=2)
+entry_new.grid(row=20, column=1, padx=10, pady=2)
 # Tạo nút "submit change password"
 button_submit_change = tk.Button(sub_frame4, text="Submit Change", command=submitchangePassword)
-button_submit_change.grid(row=18, column=2, padx=10, pady=2, rowspan=2)
+button_submit_change.grid(row=19, column=2, padx=10, pady=2, rowspan=2)
 
 
 

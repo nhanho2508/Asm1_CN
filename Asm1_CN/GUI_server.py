@@ -118,7 +118,7 @@ tk.Label(port_frame, text="Choose a port for your server set up",font = 'arial 1
 tk.Label(port_frame, text="Enter server port:").grid(row=1, column=0, sticky="e",pady=5,padx=2)
 port_entry = tk.Entry(port_frame)
 port_entry.grid(row=1, column=1, pady=5)
-port_button = tk.Button(port_frame, text="Enter", command=choosePort)
+port_button = tk.Button(port_frame, text="Enter", command=choosePort, bg="forestgreen", fg="white")
 port_button.grid(row=1, column=2, padx=2, pady=5)
 ########## MAIN FRAME ################
 main_frame =tk.Frame(root, padx =5, pady =3)
@@ -127,7 +127,7 @@ tk.Label(main_frame, text="Manage your client here",font = 'arial 10 bold', fg='
 tk.Label(main_frame, text="Enter client you want to discover:").grid(row=1, column=0, sticky="e",pady=5,padx=2)
 user_entry = tk.Entry(main_frame)
 user_entry.grid(row=1, column=1, pady=5)
-discover_button = tk.Button(main_frame, text="Discover", command=discover, width=10)
+discover_button = tk.Button(main_frame, text="Discover", command=discover, width=10, bg="darkslateblue", fg="white")
 discover_button.grid(row=1, column=2, padx=5, pady=5)
 ###Ping
 tk.Label(main_frame, text="Enter client you want to ping").grid(row=2, column=0, sticky="e",pady=5,padx=2)
@@ -136,11 +136,11 @@ ping_entry.grid(row=2, column=1, pady=5)
 tk.Label(main_frame, text="Enter number of times you want to ping").grid(row=3, column=0, sticky="e",pady=5,padx=2)
 ping_num = tk.Entry(main_frame)
 ping_num.grid(row=3, column=1, pady=5)
-ping_button = tk.Button(main_frame, text="Ping", command=ping, width=10)
+ping_button = tk.Button(main_frame, text="Ping", command=ping, width=10, bg="goldenrod3", fg="black")
 ping_button.grid(row=2, column=2, padx=5, pady=5, rowspan=2)
 ###HostInfo
 tk.Label(main_frame, text="Show information of all clients").grid(row=4, column=0, sticky="e",pady=5,padx=2)
-show_button = tk.Button(main_frame, text="Show", command=show)
+show_button = tk.Button(main_frame, text="Show", command=show, bg="gainsboro", fg="black")
 show_button.grid(row=4, column=1, padx=5, pady=5)
 
 root.protocol("WM_DELETE_WINDOW", on_closing)

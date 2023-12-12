@@ -516,8 +516,8 @@ class Peer:
                     fetch_status = self.search(fname)
                     if fetch_status[1] and fetch_status[2]:
                         list_peers = fetch_status[3]
-                        print('[**] List of other peers containing certain file:')
-                        self.info = f"[**] List of other peers containing certain file:"
+                        print('[**] List of other peers containing certain file: ')
+                        self.info = f"[**] List of other peers containing certain file: "
                         for key in list_peers:
                             print(key)
                             self.info += key                            
