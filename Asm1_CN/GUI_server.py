@@ -6,6 +6,9 @@ from server.server import *
 from peer.peer import *
 import psutil
 import socket
+import subprocess
+from tkinter import scrolledtext
+import os
 
 # Tạo cửa sổ chính
 accept_thread = None
@@ -14,15 +17,15 @@ server = None
 root = tk.Tk()
 root.title("Simple file-sharing application")
 lbl =Label(root, text = "SERVER INTERFACE", font = 'arial 15 bold', fg='black')
-lbl.pack(side="top", pady=5)
-root.geometry("500x280")
-root.resizable(False,True)
+lbl.pack(side="top", pady=2)
+root.geometry("500x270")
+root.resizable(False,False)
 
 frame = tk.Frame(root, bg="white", bd=2, relief="solid", width=200, height=50)
 frame.pack(side="bottom", fill="both", expand=True, padx=3, pady=3)
 
 # Tạo label bên trong khung
-inform_text = tk.Text(frame, wrap=tk.WORD, height = 7)
+inform_text = scrolledtext.ScrolledText(frame, wrap=tk.WORD,height=7)
 inform_text.insert(tk.END, "WELCOME TO OUR APPLICATION\n")
 inform_text.pack(fill="both", expand=True)
 error_label = tk.Label(frame, text="", fg="red")
@@ -103,6 +106,11 @@ def catch_event():
             error_label.config(text=server.error)
             server.error_renew = False
         time.sleep(0.05)
+def on_closing():
+    if messagebox.askokcancel("Thoát", "Bạn có chắc chắn muốn thoát?"):
+        root.destroy()
+        pid = os.getpid()
+        subprocess.run(["taskkill", "/F", "/PID", str(pid)])
 ##########PORT ENTER FRAME#################
 port_frame =tk.Frame(root, padx =5, pady =3)
 port_frame.pack(padx=20,pady=5)
@@ -135,6 +143,7 @@ tk.Label(main_frame, text="Show information of all clients").grid(row=4, column=
 show_button = tk.Button(main_frame, text="Show", command=show)
 show_button.grid(row=4, column=1, padx=5, pady=5)
 
+root.protocol("WM_DELETE_WINDOW", on_closing)
 # Khởi chạy vòng lặp chính của GUI
 root.pack_propagate(True)
 root.mainloop()

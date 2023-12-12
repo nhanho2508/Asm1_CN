@@ -5,7 +5,10 @@ from tkinter import messagebox
 from server.server import *
 from peer.peer import *
 import psutil
+import subprocess
 import socket
+from tkinter import scrolledtext
+import os
 
 # Tạo cửa sổ chính
 
@@ -13,15 +16,17 @@ peer = None
 root = tk.Tk()
 root.title("Simple file-sharing application")
 lbl =Label(root, text = "CLIENT INTERFACE", font = 'arial 15 bold', fg='black')
-lbl.pack(side="top", pady=5)
+lbl.pack(side="top", pady=3)
+lbl2 =Label(root, text = "", font = 'arial 10 bold', fg='blue')
+lbl2.pack(side="top", pady=1)
 root.geometry("500x500")
-root.resizable(False,True)
+root.resizable(False,False)
 
 frame = tk.Frame(root, bg="white", bd=2, relief="solid", width=200, height=50)
 frame.pack(side="bottom", fill="both", expand=True, padx=3, pady=3)
 
 # Tạo label bên trong khung
-inform_text = tk.Text(frame, wrap=tk.WORD, height = 7)
+inform_text = scrolledtext.ScrolledText(frame, wrap=tk.WORD,height=7)
 inform_text.insert(tk.END, "WELCOME TO OUR APPLICATION\n")
 inform_text.pack(fill="both", expand=True)
 error_label = tk.Label(frame, text="", fg="red")
@@ -47,6 +52,7 @@ def register():
         time.sleep(1)
         if peer.is_online ==  1:
             # Đăng nhập thành công, ẩn phần login
+            lbl2.config(text=f"Welcome back, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
             root.geometry("800x600")
@@ -63,6 +69,7 @@ def login():
         time.sleep(1)
         if peer.is_online ==  1:
             # Đăng nhập thành công, ẩn phần login
+            lbl2.config(text=f"Welcome back, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
             root.geometry("800x600")
@@ -232,6 +239,12 @@ def start_client():
     # send_thread.join()
 # Tạo cửa sổ để nhập vào port.
 
+def on_closing():
+    if messagebox.askokcancel("Thoát", "Bạn có chắc chắn muốn thoát?"):
+        root.destroy()
+        pid = os.getpid()
+        subprocess.run(["taskkill", "/F", "/PID", str(pid)])
+
 # Tạo frame để connect tới server.
 connect_frame = tk.Frame(root, padx=5, pady=2)
 tk.Label(connect_frame, text="Set up Server's IP address and Port to connect to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=2,pady=2)
@@ -349,16 +362,16 @@ button_changepass = tk.Button(main_frame, text="Change Your Password", command=c
 button_changepass.grid(row=12, column=0, padx=10, pady=2)
 button_logout = tk.Button(main_frame, text="Log Out", command=LogOut)
 button_logout.grid(row=12, column=2, padx=10, pady=2)
-button_disconnect = tk.Button(main_frame, text="Disconnect from Server", command=Disconnect)
+button_disconnect = tk.Button(main_frame, text="Disconnect from Server", command=Disconnect, bg="red", fg="white" )
 button_disconnect.grid(row=12, column=1, padx=10, pady=2)
 ##Subframe for change pass word
 sub_frame4 = tk.Frame(main_frame, padx=0, pady=5)
 tk.Label(sub_frame4, text="Change your password here",font = 'arial 10 bold', fg='black').grid(row=17, columnspan=3,pady=2)
 tk.Label(sub_frame4, text="Old password: ",anchor='w').grid(row=18, column=0, sticky="w")
-entry_old = tk.Entry(sub_frame4, width=50)
+entry_old = tk.Entry(sub_frame4, width=50,show="*")
 entry_old.grid(row=18, column=1, padx=10, pady=2)
 tk.Label(sub_frame4, text="New password: ",anchor='w').grid(row=19, column=0, sticky="w")
-entry_new = tk.Entry(sub_frame4, width=50)
+entry_new = tk.Entry(sub_frame4, width=50, show="*")
 entry_new.grid(row=19, column=1, padx=10, pady=2)
 # Tạo nút "submit change password"
 button_submit_change = tk.Button(sub_frame4, text="Submit Change", command=submitchangePassword)
@@ -366,7 +379,7 @@ button_submit_change.grid(row=18, column=2, padx=10, pady=2, rowspan=2)
 
 
 
-
+root.protocol("WM_DELETE_WINDOW", on_closing)
 root.after(100, start_client)
 # Khởi chạy vòng lặp chính của GUI
 root.pack_propagate(True)
