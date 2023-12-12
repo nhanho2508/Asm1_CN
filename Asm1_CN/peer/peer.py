@@ -388,9 +388,11 @@ class Peer:
                                 while sender_username not in list_peers:
                                     sender_username = input("You have entered an invalid username, please enter again: ")
                             else:
-                                self.info = f"[**] List of other peers containing certain file:"
+                                self.is_multi_peer = True
+                                self.info = f"[**] List of other peers containing certain file: "
                                 for key in list_peers:
-                                    self.info += key
+                                    self.info += key 
+                                    self.info += "||" 
                                 self.info_renew = True
                                 while self.sender_username == "" or self.sender_username not in list_peers: 
                                     if self.sender_username != "" and self.sender_username not in list_peers:
@@ -520,7 +522,8 @@ class Peer:
                         self.info = f"[**] List of other peers containing certain file: "
                         for key in list_peers:
                             print(key)
-                            self.info += key                            
+                            self.info += key
+                            self.info += "||"                            
                         self.info_renew = True
                     elif fetch_status[1] and not fetch_status[2]:
                         print('[*] No such file in any client!')

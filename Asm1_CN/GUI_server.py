@@ -95,6 +95,7 @@ def ping():
             except ValueError:
                 error_label.config(text="Vui lòng nhập một số nguyên.")
 def show():
+    error_label.config(text="")
     server.command_line = f"show"
 
 def catch_event():

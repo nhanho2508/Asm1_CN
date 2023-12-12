@@ -55,6 +55,8 @@ def register():
             lbl2.config(text=f"Welcome back, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
+            username_entry.delete(0, tk.END)
+            password_entry.delete(0, tk.END)
             root.geometry("800x620")
             main_frame.pack()
 def login():
@@ -72,6 +74,8 @@ def login():
             lbl2.config(text=f"Welcome back, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
+            username_entry.delete(0, tk.END)
+            password_entry.delete(0,tk.END)
             root.geometry("800x620")
             main_frame.pack()
 def connect():
@@ -85,6 +89,8 @@ def connect():
         time.sleep(0.5)
         if peer.is_connect:
             connect_frame.pack_forget()
+            server_ip_entry.delete(0,tk.END)
+            server_port_entry.delete(0,tk.END)
             login_frame.pack(padx=5,pady=5) 
 
 def browse_file():
@@ -160,7 +166,8 @@ def select():
             peer.select_peer = False
             error_label.config(text="")
             entry_username.delete(0, tk.END)
-            entry_fetch.delete(0, tk.END)
+            entry_fetch.delete(0,tk.END)
+            entry_name_store.delete(0, tk.END)
             sub_frame.grid_forget()
 def search():
     fname = entry_search.get()
@@ -179,16 +186,34 @@ def Delete():
         error_label.config(text="")
         peer.command_line=f"delete '{fname}'"
 def LogOut():
+    inform_text.delete(3.0, tk.END)
+    inform_text.insert(tk.END, "\n")
+    entry_delete.delete(0, tk.END)
+    entry_search.delete(0,tk.END)
     peer.command_line = f"logout"
     main_frame.pack_forget()
+    lbl2.config(text="")
     login_frame.pack(padx=5,pady=5) 
+    root.geometry("500x500")
 def Disconnect():
+    inform_text.delete(2.0, tk.END)
+    inform_text.insert(tk.END, "\n")
+    entry_delete.delete(0, tk.END)
+    entry_search.delete(0,tk.END)
     peer.command_line = f"disconnect"
     main_frame.pack_forget()
+    lbl2.config(text="")
+    root.geometry("500x500")
     connect_frame.pack()
 def disconnect2():
+    inform_text.delete(2.0, tk.END)
+    inform_text.insert(tk.END, "\n")
+    entry_delete.delete(0, tk.END)
+    entry_search.delete(0,tk.END)
     peer.command_line = f"disconnect"
     login_frame.pack_forget()
+    lbl2.config(text="")
+    root.geometry("500x500")
     connect_frame.pack()
 def changepass():
     sub_frame4.grid(column=0, columnspan=3)
@@ -205,6 +230,8 @@ def submitchangePassword():
         time.sleep(0.5)
         if peer.ischange_password:
             peer.ischange_password = False
+            entry_old.delete(0, tk.END)
+            entry_new.delete(0, tk.END)
             sub_frame4.grid_forget()
 
 def catch_event():
@@ -337,10 +364,10 @@ button_no3.grid(row=8, column=2, padx=10, pady=2)
 sub_frame = tk.Frame(main_frame, padx=0, pady=2)
 tk.Label(sub_frame, text="Select an username you want to fetch",anchor='w').grid(row=9, column=0, sticky="w")
 entry_username = tk.Entry(sub_frame, width=50)
-entry_username.grid(row=9, column=0, padx=10, pady=2)
+entry_username.grid(row=9, column=1, padx=10, pady=2)
 
 button_select = tk.Button(sub_frame, text="Select", command=select)
-button_select.grid(row=9, column=1, padx=10, pady=2)
+button_select.grid(row=9, column=2, padx=10, pady=2)
 
 
 #-------------------------- View ----------------------------
