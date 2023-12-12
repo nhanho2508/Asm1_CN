@@ -77,13 +77,22 @@ def discover():
         server.command_line = f"discover {user_discover}"
 def ping():
     user_ping = ping_entry.get()
+    num_ping = ping_num.get()
     if (user_ping==""):
         error_label.config(text="Vui lòng nhập username cần ping")
-    else: 
-        error_label.config(text="")
-        server.command_line = f"ping {user_ping}"
+    else:
+        if num_ping== "":
+            error_label.config(text="")
+            server.command_line = f"ping {user_ping}"
+        else:
+            try:
+                value = int(ping_num.get())
+                error_label.config(text="")
+                server.command_line = f"ping {user_ping} {value}"
+            except ValueError:
+                error_label.config(text="Vui lòng nhập một số nguyên.")
 def show():
-    server.command_line = f"host_info"
+    server.command_line = f"show"
 
 def catch_event():
     while True:
@@ -93,7 +102,7 @@ def catch_event():
         if(server.error_renew):
             error_label.config(text=server.error)
             server.error_renew = False
-        time.sleep(0.2)
+        time.sleep(0.05)
 ##########PORT ENTER FRAME#################
 port_frame =tk.Frame(root, padx =5, pady =3)
 port_frame.pack(padx=20,pady=5)
@@ -116,12 +125,15 @@ discover_button.grid(row=1, column=2, padx=5, pady=5)
 tk.Label(main_frame, text="Enter client you want to ping").grid(row=2, column=0, sticky="e",pady=5,padx=2)
 ping_entry = tk.Entry(main_frame)
 ping_entry.grid(row=2, column=1, pady=5)
+tk.Label(main_frame, text="Enter number of times you want to ping").grid(row=3, column=0, sticky="e",pady=5,padx=2)
+ping_num = tk.Entry(main_frame)
+ping_num.grid(row=3, column=1, pady=5)
 ping_button = tk.Button(main_frame, text="Ping", command=ping, width=10)
-ping_button.grid(row=2, column=2, padx=5, pady=5)
+ping_button.grid(row=2, column=2, padx=5, pady=5, rowspan=2)
 ###HostInfo
-tk.Label(main_frame, text="Show information of all clients").grid(row=3, column=0, sticky="e",pady=5,padx=2)
+tk.Label(main_frame, text="Show information of all clients").grid(row=4, column=0, sticky="e",pady=5,padx=2)
 show_button = tk.Button(main_frame, text="Show", command=show)
-show_button.grid(row=3, column=1, padx=5, pady=5)
+show_button.grid(row=4, column=1, padx=5, pady=5)
 
 # Khởi chạy vòng lặp chính của GUI
 root.pack_propagate(True)

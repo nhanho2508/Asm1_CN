@@ -8,22 +8,22 @@ import psutil
 import socket
 
 # Tạo cửa sổ chính
-listen_thread = None
-send_thread = None
+
 peer = None
 root = tk.Tk()
 root.title("Simple file-sharing application")
 lbl =Label(root, text = "CLIENT INTERFACE", font = 'arial 15 bold', fg='black')
 lbl.pack(side="top", pady=5)
-root.geometry("400x170")
+root.geometry("500x500")
 root.resizable(False,True)
 
 frame = tk.Frame(root, bg="white", bd=2, relief="solid", width=200, height=50)
 frame.pack(side="bottom", fill="both", expand=True, padx=3, pady=3)
 
 # Tạo label bên trong khung
-inform_label = tk.Label(frame, text="WELCOME TO OUR APPLICATION", fg="blue", bg="white")
-inform_label.pack(fill="both", expand=True)
+inform_text = tk.Text(frame, wrap=tk.WORD, height = 7)
+inform_text.insert(tk.END, "WELCOME TO OUR APPLICATION\n")
+inform_text.pack(fill="both", expand=True)
 error_label = tk.Label(frame, text="", fg="red")
 error_label.pack( fill="both", expand=True)
 # Tạo các thành phần giao diện
@@ -43,91 +43,43 @@ def register():
         error_label.config(text="Nhập vào đầy đủ các trường thông tin")
     else:
         error_label.config(text="")
-        command_line = f"register {username} {password}"
-        peer.set_command(command_line)
-        while peer.wait:
-            continue
-        info = peer.get_info()
-        peer.reset_info()
-        if info != "":
+        peer.command_line = f"register {username} {password}"
+        time.sleep(1)
+        if peer.is_online ==  1:
+            # Đăng nhập thành công, ẩn phần login
             login_frame.pack_forget()
-            inform_label.config(text=info)
             error_label.config(text="")
-            root.geometry("400x500")
+            root.geometry("800x600")
             main_frame.pack()
-        else:
-            info = peer.get_error()
-            peer.reset_error()
-            error_label.config(text=info)
 def login():
     username = username_entry.get()
     password = password_entry.get()
     if(username=="" or password==""):
-        error_label.config(text="Nhập vào đầy đủ các trường thông tin")
+        error_label.config(text="Nhập vào đầy đủ các trường thông tin!")
     else:
         error_label.config(text="")
-        command_line = f"login {username} {password}"
-        peer.set_command(command_line)
-        while peer.wait:
-            continue
-        info = peer.get_info()
-        peer.reset_info()
+        peer.command_line = f"login {username} {password}"
         # Kiểm tra thông tin đăng nhập, ở đây là một ví dụ đơn giản
-        if info != "":
+        time.sleep(1)
+        if peer.is_online ==  1:
             # Đăng nhập thành công, ẩn phần login
             login_frame.pack_forget()
-            inform_label.config(text=info)
             error_label.config(text="")
-            root.geometry("400x500")
+            root.geometry("800x600")
             main_frame.pack()
-        else:
-            info = peer.get_error()
-            peer.reset_error()
-            # Hiển thị thông báo đăng nhập không thành công
-            error_label.config(text=info)
 def connect():
     server_ip = server_ip_entry.get()
     server_port = server_port_entry.get()
-    command_line = f"connect {server_ip} {server_port}"
-    peer.set_command(command_line)
-    while peer.wait:
-        continue
-    info = peer.get_info()
-    peer.reset_info()
-    inform_label.config(text=info)
-    ###########
-    connect_frame.pack_forget()
-    login_frame.pack(padx=5,pady=5) 
-def choosePort():
-    host = get_wifi_ip_address()
-    if host is None: 
-        host =socket.gethostbyname(socket.gethostname())
-    port = "8081"
-    PORT = "8080"
-    HOST = host
-    port = port_entry.get()
-    if port == '':
-        error_label.config(text="Please fill in the valid port number")
+    if(server_ip=="" or server_port ==""):
+        error_label.config(text="Vui lòng không bỏ sót trường thông tin!")
     else:
-        global peer
-        peer = Peer(host, int(port), HOST, int(PORT))
-        response = peer.get_info()
-        peer.reset_info()
-        peer.set_GUI()
-        inform_label.config(text=response)
-        global listen_thread
-        global send_thread
-        listen_thread = threading.Thread(target=peer.listen, args=())
-        send_thread = threading.Thread(target=peer.send_command, args=())
-        # Start both threads
-        listen_thread.start()
-        send_thread.start()
-        # listen_thread.join()
-        # send_thread.join()
-        port_frame.pack_forget()
-        root.geometry("400x240")
-        connect_frame.pack(padx=20, pady=10)
         error_label.config(text="")
+        peer.command_line = f"connect {server_ip} {server_port}"
+        time.sleep(0.5)
+        if peer.is_connect:
+            connect_frame.pack_forget()
+            login_frame.pack(padx=5,pady=5) 
+
 def browse_file():
     file_path = filedialog.askopenfilename()
     entry_path.delete(0, tk.END)
@@ -139,56 +91,56 @@ def publish():
         error_label.config(text="Nhập vào đầy đủ các trường thông tin")
     else:
         error_label.config(text="")
-        peer.set_command(f"publish '{lname}' '{fname}'")
-        while peer.wait:
-            continue
-        info = peer.get_info()
-        peer.reset_info()
-        if info!="":
-            inform_label.config(text=info)
+        peer.command_line=f'publish "{lname}" "{fname}"'
+        time.sleep(0.5)
+        if peer.is_replace:
+            peer.is_replace = False
+            sub_frame2.grid(column=0, columnspan=3)
             error_label.config(text= "")
         else:
-            info = peer.get_error()
-            peer.reset_error()
-            error_label.config(text=info)
-            inform_label.config(text ="")
-        entry_path.delete(0, tk.END)
-        entry_name.delete(0, tk.END)
+            entry_path.delete(0, tk.END)
+            entry_name.delete(0, tk.END)
+def replaceYes():
+    peer.action = "R"
+    sub_frame2.grid_forget()
+def replaceNo():
+    peer.action = "C"
+    sub_frame2.grid_forget()
+def replaceYes3():
+    peer.action = "R"
+    sub_frame3.grid_forget()
+    time.sleep(0.5)
+    if peer.is_multi_peer:
+        peer.is_multi_peer = False
+        sub_frame.grid(column=0, columnspan=3)
+    else:
+        entry_fetch.delete(0, tk.END)
+        entry_name_store.delete(0, tk.END)
+def replaceNo3():
+    peer.action = "C"
+    sub_frame3.grid_forget()
 def fetch():
-    fname =entry_fetch.get()
+    fname = entry_fetch.get()
+    sname = entry_name_store.get()
     if (fname ==""):
         error_label.config(text="Vui lòng nhập vào tên file!")
-        inform_label.config(text="")
     else:
         error_label.config(text="")
-        peer.set_command(f"fetch '{fname}'")
-        while peer.wait:
-            continue
-        if peer.get_multi_peer() == True:
-            info = peer.get_info()
-            peer.reset_info()
-            if info!="":
-                inform_label.config(text=info)
+        if(sname == ""):
+            peer.command_line = f"fetch '{fname}'"
+        else: 
+            peer.command_line = f"fetch '{fname}' {sname}"
+        time.sleep(0.5)
+        if peer.is_replace:
+            peer.is_replace = False
+            sub_frame3.grid(column=0, columnspan=3)
+        elif peer.is_multi_peer:
+            peer.is_multi_peer = False
+            sub_frame.grid(column=0, columnspan=3)    
         else:
-            while peer.wait:
-                continue
-            info = peer.get_info()
-            peer.reset_info()
-            if info!="":
-                inform_label.config(text=info+"\n Hãy vào thư mục kiểm tra")
-                error_label.config(text="")
-            else:
-                info = peer.get_error()
-                peer.reset_error()
-                error_label.config(text=info)
-                inform_label.config(text ="")
-        if peer.get_multi_peer() == True:
-            sub_frame.grid(row = 10, column=0)
-            for i, item in enumerate(peer.get_list_peer()):
-                label = tk.Label(sub_frame, text=item)
-                label.grid(row=i+10, column=0, pady=5)
-        else:    
             entry_fetch.delete(0, tk.END)
+            entry_name_store.delete(0, tk.END)
+
 def select():
     username = entry_username.get()
     if (username==""):
@@ -196,99 +148,226 @@ def select():
     else:
         error_label.config(text="")
         peer.sender_username = username
-        while peer.wait:
-            continue
-        info = peer.get_info()
-        peer.reset_info()
-        if info!="":
-            inform_label.config(text=info+"\n Hãy vào thư mục kiểm tra")
+        time.sleep(0.5)
+        if peer.select_peer:
+            peer.select_peer = False
             error_label.config(text="")
             entry_username.delete(0, tk.END)
             entry_fetch.delete(0, tk.END)
             sub_frame.grid_forget()
-        else:
-            info = peer.get_error()
-            peer.reset_error()
-            error_label.config(text=info)
-            inform_label.config(text ="")
+def search():
+    fname = entry_search.get()
+    if (fname == ""):
+        error_label.config(text="Vui lòng nhập vào tên file!")
+    else:
+        error_label.config(text="")
+        peer.command_line=f"search '{fname}'"
+def View():
+    peer.command_line = f"view"
+def Delete():
+    fname = entry_delete.get()
+    if fname == "":
+        error_label.config(text="Vui lòng nhập vào tên file!")
+    else:
+        error_label.config(text="")
+        peer.command_line=f"delete '{fname}'"
+def LogOut():
+    peer.command_line = f"logout"
+    main_frame.pack_forget()
+    login_frame.pack(padx=5,pady=5) 
+def Disconnect():
+    peer.command_line = f"disconnect"
+    main_frame.pack_forget()
+    connect_frame.pack()
+def disconnect2():
+    peer.command_line = f"disconnect"
+    login_frame.pack_forget()
+    connect_frame.pack()
+def changepass():
+    sub_frame4.grid(column=0, columnspan=3)
+
+def submitchangePassword():
+    old = entry_old.get()
+    new = entry_new.get()
+    if (old == "" or new == ""):
+        if (old =="") and new =="": sub_frame4.grid_forget()
+        error_label.config(text="Vui lòng nhập đầy đủ các trường")
+    else:
+        error_label.config(text="")
+        peer.command_line =f"change_password '{old}' '{new}'"
+        time.sleep(0.5)
+        if peer.ischange_password:
+            peer.ischange_password = False
+            sub_frame4.grid_forget()
+
+def catch_event():
+    while True:
+        if(peer.info_renew):
+            inform_text.insert(tk.END, peer.info+"\n")
+            peer.info_renew = False
+        if(peer.error_renew):
+            error_label.config(text=peer.error)
+            peer.error_renew = False
+        time.sleep(0.05)
+def start_client():
+    host = get_wifi_ip_address()
+    if host is None: 
+        host =socket.gethostbyname(socket.gethostname())
+    port = "8081"
+    PORT = "8080"
+    HOST = host
+    global peer
+    peer = Peer(host, int(port), HOST, int(PORT))
+    peer.is_GUI = True
+    send_thread = threading.Thread(target=peer.send_command, args=())
+    # Start both threads
+    send_thread.start()
+    connect_frame.pack()
+    info = peer.info
+    inform_text.insert(tk.END, info+"\n")
+
+    catch_event_thread = threading.Thread(target=catch_event, args=())
+    catch_event_thread.start()
+    # listen_thread.join()
+    # send_thread.join()
 # Tạo cửa sổ để nhập vào port.
-port_frame =tk.Frame(root, padx =5, pady =3)
-port_frame.pack(padx=20,pady=5)
-tk.Label(port_frame, text="Choose a port for your client to set up",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=2)
-tk.Label(port_frame, text="Enter your port:").grid(row=1, column=0, sticky="e",pady=5,padx=2)
-port_entry = tk.Entry(port_frame)
-port_entry.grid(row=1, column=1, pady=5)
-port_button = tk.Button(port_frame, text="Enter", command=choosePort)
-port_button.grid(row=1, column=2, padx=2, pady=5)
 
 # Tạo frame để connect tới server.
-connect_frame = tk.Frame(root, padx=5, pady=5)
-tk.Label(connect_frame, text="Set up IP address and Port to connect to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=2,pady=3)
-tk.Label(connect_frame, text="Host IP:").grid(row=1, column=0, sticky="e",pady=3)
+connect_frame = tk.Frame(root, padx=5, pady=2)
+tk.Label(connect_frame, text="Set up Server's IP address and Port to connect to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=2,pady=2)
+tk.Label(connect_frame, text="Server's IP:").grid(row=1, column=0, sticky="e",pady=2)
 server_ip_entry = tk.Entry(connect_frame)
-server_ip_entry.grid(row=1, column=1, pady=3)
+server_ip_entry.grid(row=1, column=1, pady=2)
 
-tk.Label(connect_frame, text="Port:").grid(row=2, column=0, sticky="e",pady=3)
+tk.Label(connect_frame, text="Server's Port:").grid(row=2, column=0, sticky="e",pady=2)
 server_port_entry = tk.Entry(connect_frame)
-server_port_entry.grid(row=2, column=1, pady=3)
+server_port_entry.grid(row=2, column=1, pady=2)
 
 connect_button = tk.Button(connect_frame, text="Connect", command=connect)
-connect_button.grid(row=3, column=1,pady=5)
-
+connect_button.grid(row=3, column=1,pady=2)
+connect_frame.pack(padx=20, pady=2)
 # Tạo frame cho phần login
-login_frame = tk.Frame(root, padx=10, pady=10)
+login_frame = tk.Frame(root, padx=10, pady=2)
 # login_frame.pack(padx=20, pady=20)
-tk.Label(login_frame, text="Login or register an account to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=3,pady=3)
-tk.Label(login_frame, text="Username:").grid(row=1, column=0, sticky="e", padx=3,pady=3)
+tk.Label(login_frame, text="Login or register an account to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=3,pady=2)
+tk.Label(login_frame, text="Username:").grid(row=1, column=0, sticky="e", padx=3,pady=2)
 username_entry = tk.Entry(login_frame)
-username_entry.grid(row=1, column=1,padx=3,pady=3)
+username_entry.grid(row=1, column=1,padx=3,pady=2)
 
-tk.Label(login_frame, text="Password:").grid(row=2, column=0, sticky="e", padx=3,pady=3)
+tk.Label(login_frame, text="Password:").grid(row=2, column=0, sticky="e", padx=3,pady=2)
 password_entry = tk.Entry(login_frame, show="*")
-password_entry.grid(row=2, column=1,padx=3,pady=3)
+password_entry.grid(row=2, column=1,padx=3,pady=2)
 
 login_button = tk.Button(login_frame, text="Login", command=login, width=10)
-login_button.grid(row=1, column=3, padx=3,pady=3)
+login_button.grid(row=1, column=2, padx=3,pady=2)
 register_button = tk.Button(login_frame, text="Register", command=register, width=10)
-register_button.grid(row=2, column=3,padx=3,pady=3)
-tk.Label(login_frame, text="").grid(row=3, column=0, sticky="e", padx=3,pady=3)
+register_button.grid(row=2, column=2,padx=3,pady=2)
+tk.Label(login_frame, text="Disconnect to connect another server?").grid(row=3, column=0, sticky="e", padx=3,pady=2,columnspan=2)
+disconnect_button = tk.Button(login_frame, text="Disconnect", command=disconnect2, width=10)
+disconnect_button.grid(row=3, column=2,padx=3,pady=2)
 
 
 # Tạo frame có 2 lệnh và nút cơ bản là publish và fetch
-main_frame = tk.Frame(root, padx=10, pady=10)
-# Publish
-tk.Label(main_frame, text="Publish your file here",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=3,pady=3)
+main_frame = tk.Frame(root, padx=10, pady=5)
+# -----------------------------------Publish ----------------------
+#--------------------------------------------------------------------
+tk.Label(main_frame, text="Publish your file here",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=3,pady=2)
 tk.Label(main_frame, text="Path: ",anchor='w').grid(row=1, column=0, sticky="w")
 entry_path = tk.Entry(main_frame, width=50)
-entry_path.grid(row=2, column=0, padx=10, pady=10)
+entry_path.grid(row=1, column=1, padx=10, pady=2)
 button_browse = tk.Button(main_frame, text="Browse", command=browse_file)
-button_browse.grid(row=2, column=1, padx=10, pady=10)
+button_browse.grid(row=1, column=2, padx=10, pady=2)
 
-tk.Label(main_frame, text="Save in your client's repository as: ",anchor='w').grid(row=3, column=0, sticky="w")
+tk.Label(main_frame, text="Save in your client's repository as: ",anchor='w').grid(row=2, column=0, sticky="w")
 entry_name = tk.Entry(main_frame, width=50)
-entry_name.grid(row=4, column=0, padx=10, pady=10)
+entry_name.grid(row=2, column=1, padx=10, pady=2)
 
-# Tạo nút "Duyệt File"
+# Tạo nút "Publish File"
 button_publish = tk.Button(main_frame, text="Publish", command=publish)
-button_publish.grid(row=4, column=1, padx=10, pady=10)
+button_publish.grid(row=2, column=2, padx=10, pady=2)
 
-tk.Label(main_frame, text="Fetch a file here",font = 'arial 10 bold', fg='black').grid(row=5, columnspan=3,pady=5)
+sub_frame2 = tk.Frame(main_frame, padx=0, pady=2)
+tk.Label(sub_frame2, text="Replace the original file?",fg='red',anchor='w').grid(row=3, column=0, sticky="w")
+button_yes = tk.Button(sub_frame2, text="Yes", command=replaceYes)
+button_yes.grid(row=3, column=1, padx=10, pady=2)
+button_no = tk.Button(sub_frame2, text="No", command=replaceNo)
+button_no.grid(row=3, column=2, padx=10, pady=2)
+#-----------------------------SEARCH --------------------------------
+# -----------------------------------------------------------
+tk.Label(main_frame, text="Search a file here",font = 'arial 10 bold', fg='black').grid(row=4, columnspan=3,pady=2)
+# search file
+tk.Label(main_frame, text="Input file name you want to search",anchor='w').grid(row=5, column=0, sticky="w")
+entry_search = tk.Entry(main_frame, width=50)
+entry_search.grid(row=5, column=1, padx=10, pady=2)
+button_search = tk.Button(main_frame, text="Search", command=search)
+button_search.grid(row=5, column=2, padx=10, pady=2)
+# -----------------------------FETCH----------------------------
+tk.Label(main_frame, text="Fetch a file here",font = 'arial 10 bold', fg='black').grid(row=6, columnspan=3,pady=2)
 # Tạo fetch file
-tk.Label(main_frame, text="Input file name you want to fetch",anchor='w').grid(row=6, column=0, sticky="w")
+tk.Label(main_frame, text="Input file name you want to fetch",anchor='w').grid(row=7, column=0, sticky="w")
 entry_fetch = tk.Entry(main_frame, width=50)
-entry_fetch.grid(row=7, column=0, padx=10, pady=10)
+entry_fetch.grid(row=7, column=1, padx=10, pady=2)
+tk.Label(main_frame, text="Store in your repository as name: ",anchor='w').grid(row=8, column=0, sticky="w")
+entry_name_store = tk.Entry(main_frame, width=50)
+entry_name_store.grid(row=8, column=1, padx=10, pady=2)
 button_fetch = tk.Button(main_frame, text="Fetch", command=fetch)
-button_fetch.grid(row=7, column=1, padx=10, pady=10)
+button_fetch.grid(row=7, column=2, padx=10, pady=2, rowspan= 2 )
 ###########
-sub_frame = tk.Frame(main_frame, padx=0, pady=5)
-
-tk.Label(sub_frame, text="Select an username you want to fetch",anchor='w').grid(row=8, column=0, sticky="w")
+# - Handle trùng tên file
+sub_frame3 = tk.Frame(main_frame, padx=0, pady=2)
+tk.Label(sub_frame3, text="Replace the original file?",anchor='w').grid(row=8, column=0, sticky="w")
+button_yes3 = tk.Button(sub_frame3, text="Yes",fg='red', command=replaceYes3)
+button_yes3.grid(row=8, column=1, padx=10, pady=2)
+button_no3 = tk.Button(sub_frame3, text="No", command=replaceNo3)
+button_no3.grid(row=8, column=2, padx=10, pady=2)
+# -- Multi peer to fetch
+sub_frame = tk.Frame(main_frame, padx=0, pady=2)
+tk.Label(sub_frame, text="Select an username you want to fetch",anchor='w').grid(row=9, column=0, sticky="w")
 entry_username = tk.Entry(sub_frame, width=50)
-entry_username.grid(row=9, column=0, padx=10, pady=10)
+entry_username.grid(row=9, column=0, padx=10, pady=2)
 
 button_select = tk.Button(sub_frame, text="Select", command=select)
-button_select.grid(row=9, column=1, padx=10, pady=10)
+button_select.grid(row=9, column=1, padx=10, pady=2)
 
+
+#-------------------------- View ----------------------------
+# -----------------------------------------------------------
+tk.Label(main_frame, text="View all files in your publish repository",anchor='w').grid(row=10, column=0, sticky="w")
+button_view = tk.Button(main_frame, text="View", command=View)
+button_view.grid(row=10, column=1, padx=10, pady=2)
+
+# ---------------------------Delete ---------------------------
+# -------------------------------------------------------------
+tk.Label(main_frame, text="Input file name you want to delete in your publish repository",anchor='w').grid(row=11, column=0, sticky="w")
+entry_delete = tk.Entry(main_frame, width=50)
+entry_delete.grid(row=11, column=1, padx=10, pady=2)
+button_delete = tk.Button(main_frame, text="Delete", command=Delete)
+button_delete.grid(row=11, column=2, padx=10, pady=2)
+# -------------------------- 3 Button --------------------------
+# ----------------------------------------------------------------
+button_changepass = tk.Button(main_frame, text="Change Your Password", command=changepass)
+button_changepass.grid(row=12, column=0, padx=10, pady=2)
+button_logout = tk.Button(main_frame, text="Log Out", command=LogOut)
+button_logout.grid(row=12, column=2, padx=10, pady=2)
+button_disconnect = tk.Button(main_frame, text="Disconnect from Server", command=Disconnect)
+button_disconnect.grid(row=12, column=1, padx=10, pady=2)
+##Subframe for change pass word
+sub_frame4 = tk.Frame(main_frame, padx=0, pady=5)
+tk.Label(sub_frame4, text="Change your password here",font = 'arial 10 bold', fg='black').grid(row=17, columnspan=3,pady=2)
+tk.Label(sub_frame4, text="Old password: ",anchor='w').grid(row=18, column=0, sticky="w")
+entry_old = tk.Entry(sub_frame4, width=50)
+entry_old.grid(row=18, column=1, padx=10, pady=2)
+tk.Label(sub_frame4, text="New password: ",anchor='w').grid(row=19, column=0, sticky="w")
+entry_new = tk.Entry(sub_frame4, width=50)
+entry_new.grid(row=19, column=1, padx=10, pady=2)
+# Tạo nút "submit change password"
+button_submit_change = tk.Button(sub_frame4, text="Submit Change", command=submitchangePassword)
+button_submit_change.grid(row=18, column=2, padx=10, pady=2, rowspan=2)
+
+
+
+
+root.after(100, start_client)
 # Khởi chạy vòng lặp chính của GUI
 root.pack_propagate(True)
 root.mainloop()
