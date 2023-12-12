@@ -1,8 +1,10 @@
 WELCOME TO OUR APPLICATION --- SIMPLE FILE SHARING.
 
+
 --------------------- When using the terminal --------------------
 
 --Run the server
+
     1. Execute the file `main_server.py`.
     2. Choose a port for your server; for example, enter the port: `12000`.
     3. Ping a client (only if the client is online, connected, and logged in): `ping username number`.
@@ -13,6 +15,7 @@ WELCOME TO OUR APPLICATION --- SIMPLE FILE SHARING.
     5. Show: `show` will return all the usernames and their hashed passwords on the server.
 
 --Run the client
+
     1. Execute the file `main_client.py`.
     2. Connect to the server: `connect IP Port` with the server's IP and Port, for example: `connect 172.16.1.61 12001`.
     3. Login/Register
@@ -33,3 +36,16 @@ WELCOME TO OUR APPLICATION --- SIMPLE FILE SHARING.
     9. Change your password: `change_password old_password new_password`.
     10. Log out of your account: `logout`.
     11. Disconnect from the server: `disconnect`.
+--------------------- When using the GUI --------------------
+-- Run the server 
+
+    1. Execute the file `GUI_server`
+    2. Enter Port
+    3. Follow the instructions provided in the application's usage guide.
+-- Run the client
+
+    1. Execute the file `GUI_client`
+    2. Connect to Server
+    3. Login/ Register
+    4. Follow the instructions provided in the application's usage guide.
+
