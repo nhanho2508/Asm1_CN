@@ -106,7 +106,7 @@ def catch_event():
         if(server.error_renew):
             error_label.config(text=server.error)
             server.error_renew = False
-        time.sleep(0.05)
+        time.sleep(0.01)
 def on_closing():
     if messagebox.askokcancel("Thoát", "Bạn có chắc chắn muốn thoát?"):
         root.destroy()

@@ -404,6 +404,7 @@ class Peer:
                         self.select_peer = True
                         self.info = "[**] Downloading file ... please wait ..."
                         self.info_renew = True
+                        if(self.is_GUI): time.sleep(1)
                         start_time_2 = time.time()
                         download_status = helper.download_file(list_peers[sender_username], fname, rname, self.repo_path)
                         update_status = self.send_receive([PUBLISH, self.username, rname], self.server_host, self.server_port)

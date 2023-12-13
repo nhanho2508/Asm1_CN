@@ -242,7 +242,7 @@ def catch_event():
         if(peer.error_renew):
             error_label.config(text=peer.error)
             peer.error_renew = False
-        time.sleep(0.05)
+        time.sleep(0.01)
 def start_client():
     host = get_wifi_ip_address()
     if host is None: 
