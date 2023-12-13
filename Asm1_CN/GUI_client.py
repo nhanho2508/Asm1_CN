@@ -52,7 +52,7 @@ def register():
         time.sleep(1)
         if peer.is_online ==  1:
             # Đăng nhập thành công, ẩn phần login
-            lbl2.config(text=f"Welcome back, {username}!", fg="blue")
+            lbl2.config(text=f"Welcome to our app, {username}!", fg="blue")
             login_frame.pack_forget()
             error_label.config(text="")
             username_entry.delete(0, tk.END)
@@ -86,7 +86,7 @@ def connect():
     else:
         error_label.config(text="")
         peer.command_line = f"connect {server_ip} {server_port}"
-        time.sleep(0.5)
+        time.sleep(1)
         if peer.is_connect:
             connect_frame.pack_forget()
             server_ip_entry.delete(0,tk.END)
@@ -105,7 +105,7 @@ def publish():
     else:
         error_label.config(text="")
         peer.command_line=f'publish "{lname}" "{fname}"'
-        time.sleep(0.5)
+        time.sleep(1)
         if peer.is_replace:
             peer.is_replace = False
             sub_frame2.grid(column=0, columnspan=3)
@@ -122,7 +122,7 @@ def replaceNo():
 def replaceYes3():
     peer.action = "R"
     sub_frame3.grid_forget()
-    time.sleep(0.5)
+    time.sleep(1)
     if peer.is_multi_peer:
         peer.is_multi_peer = False
         sub_frame.grid(column=0, columnspan=3)
@@ -143,7 +143,7 @@ def fetch():
             peer.command_line = f"fetch '{fname}'"
         else: 
             peer.command_line = f"fetch '{fname}' {sname}"
-        time.sleep(0.5)
+        time.sleep(1)
         if peer.is_replace:
             peer.is_replace = False
             sub_frame3.grid(column=0, columnspan=3)
@@ -161,7 +161,7 @@ def select():
     else:
         error_label.config(text="")
         peer.sender_username = username
-        time.sleep(0.5)
+        time.sleep(1)
         if peer.select_peer:
             peer.select_peer = False
             error_label.config(text="")
@@ -227,7 +227,7 @@ def submitchangePassword():
     else:
         error_label.config(text="")
         peer.command_line =f"change_password '{old}' '{new}'"
-        time.sleep(0.5)
+        time.sleep(1)
         if peer.ischange_password:
             peer.ischange_password = False
             entry_old.delete(0, tk.END)

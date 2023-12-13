@@ -400,7 +400,7 @@ class Peer:
                                         self.error_renew = True
                                     continue
                                 sender_username = self.sender_username
-                                self.sender_username == "" 
+                                self.sender_username = "" 
                         self.select_peer = True
                         self.info = "[**] Downloading file ... please wait ..."
                         self.info_renew = True
@@ -411,7 +411,7 @@ class Peer:
                         if download_status and update_status[1]:
                             print(f"[*] DOWNLOAD successfully.")
                             print(f"[*] FETCH successfully. ({(end_time_1 - start_time_1) + (end_time_2 - start_time_2):.5f} s)")
-                            self.info = f"[*] DOwNLOAD successfully.\n[*] FETCH successfully. ({(end_time_1 - start_time_1) + (end_time_2 - start_time_2):.5f} s)"
+                            self.info = f"[*] DOWNLOAD successfully.\n[*] FETCH successfully. ({(end_time_1 - start_time_1) + (end_time_2 - start_time_2):.5f} s)"
                             self.info_renew = True
                         else:
                             print("[*] Error: DOWNLOAD failed!")
