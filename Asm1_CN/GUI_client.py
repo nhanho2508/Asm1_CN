@@ -378,7 +378,7 @@ button_view.grid(row=10, column=1, padx=10, pady=2)
 
 # ---------------------------Delete ---------------------------
 # -------------------------------------------------------------
-tk.Label(main_frame, text="Delete a file here",font = 'arial 10 bold', fg='black').grid(row=11, columnspan=3,pady=2)
+tk.Label(main_frame, text="Delete your file here",font = 'arial 10 bold', fg='black').grid(row=11, columnspan=3,pady=2)
 tk.Label(main_frame, text="Input file name you want to delete in your publish repository",anchor='w').grid(row=12, column=0, sticky="w")
 entry_delete = tk.Entry(main_frame, width=50)
 entry_delete.grid(row=12, column=1, padx=10, pady=2)
