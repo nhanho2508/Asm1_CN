@@ -362,11 +362,11 @@ button_no3 = tk.Button(sub_frame3, text="No", command=replaceNo3, fg="brown3")
 button_no3.grid(row=8, column=2, padx=10, pady=2)
 # -- Multi peer to fetch
 sub_frame = tk.Frame(main_frame, padx=0, pady=2)
-tk.Label(sub_frame, text="Select an username you want to fetch",anchor='w').grid(row=9, column=0, sticky="w")
+tk.Label(sub_frame, text="Select an username you want to fetch:",anchor='w', font='arial 8 bold').grid(row=9, column=0, sticky="w")
 entry_username = tk.Entry(sub_frame, width=50)
 entry_username.grid(row=9, column=1, padx=10, pady=2)
 
-button_select = tk.Button(sub_frame, text="Select", command=select)
+button_select = tk.Button(sub_frame, text="Select", command=select, bg="forestgreen", fg="white")
 button_select.grid(row=9, column=2, padx=10, pady=2)
 
 
@@ -378,7 +378,7 @@ button_view.grid(row=10, column=1, padx=10, pady=2)
 
 # ---------------------------Delete ---------------------------
 # -------------------------------------------------------------
-tk.Label(main_frame, text="Delete a file here",font = 'arial 10 bold', fg='black').grid(row=11, columnspan=3,pady=2)
+tk.Label(main_frame, text="Delete your file here",font = 'arial 10 bold', fg='black').grid(row=11, columnspan=3,pady=2)
 tk.Label(main_frame, text="Input file name you want to delete in your publish repository",anchor='w').grid(row=12, column=0, sticky="w")
 entry_delete = tk.Entry(main_frame, width=50)
 entry_delete.grid(row=12, column=1, padx=10, pady=2)
@@ -402,7 +402,7 @@ tk.Label(sub_frame4, text="New password: ",anchor='w').grid(row=20, column=0, st
 entry_new = tk.Entry(sub_frame4, width=50, show="*")
 entry_new.grid(row=20, column=1, padx=10, pady=2)
 # Tạo nút "submit change password"
-button_submit_change = tk.Button(sub_frame4, text="Submit Change", command=submitchangePassword)
+button_submit_change = tk.Button(sub_frame4, text="Submit Change", command=submitchangePassword, bg="forestgreen", fg="white")
 button_submit_change.grid(row=19, column=2, padx=10, pady=2, rowspan=2)
 
 
