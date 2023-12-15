@@ -262,7 +262,7 @@ class Peer:
                     password = parsed_string[2]
                     self.semaphore.acquire()
                     login_status = self.login(username, password)
-                    if login_status[1] and login_status[2] == 1:
+                    if login_status[1] and login_status[2] == 2:
                         self.is_online = 1
                         self.username = username
                         self.password = password
@@ -271,6 +271,10 @@ class Peer:
                         print("[*] LOGIN successfully.")
                         self.info = "[*] LOGIN successfully."
                         self.info_renew = True
+                    elif login_status[1] and login_status[2] == 1:
+                        print("[*] The account is online somewhere.")
+                        self.error = "[*] The account is online somewhere."
+                        self.error_renew = True
                     elif login_status[1] and login_status[2] == 0:
                         print("[*] Invalid password.")
                         self.error = "[*] Invalid password."
@@ -441,7 +445,7 @@ class Peer:
                         self.is_replace = True
                         if not self.is_GUI:
                             self.action = input("Replace the original file or Cancel to rename (R/C): ")
-                        else: 
+                        else:
                             while self.action == "": 
                                 continue
                         action = self.action
