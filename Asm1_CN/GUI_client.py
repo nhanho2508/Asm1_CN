@@ -274,7 +274,7 @@ def on_closing():
 
 # Tạo frame để connect tới server.
 connect_frame = tk.Frame(root, padx=5, pady=2)
-tk.Label(connect_frame, text="Set up Server's IP address and Port to connect to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=2,pady=2)
+tk.Label(connect_frame, text="Set up Server's IP address and Listening port to connect to server",font = 'arial 10 bold', fg='black').grid(row=0, columnspan=2,pady=2)
 tk.Label(connect_frame, text="Server's IP:").grid(row=1, column=0, sticky="e",pady=2)
 server_ip_entry = tk.Entry(connect_frame)
 server_ip_entry.grid(row=1, column=1, pady=2)

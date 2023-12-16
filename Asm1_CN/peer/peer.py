@@ -204,6 +204,7 @@ class Peer:
                         self.password = password
                         server_repo_path = os.path.join(REPO_PATH, self.host + '/' + str(self.server_port-1))
                         self.repo_path = os.path.join(server_repo_path, username)
+                        helper.create_repo(self.repo_path)
                         print("[*] REGISTER successfully.")
                         self.info = "[*] REGISTER successfully."
                         self.info_renew = True
@@ -268,6 +269,7 @@ class Peer:
                         self.password = password
                         server_repo_path = os.path.join(REPO_PATH, self.host + '/' + str(self.server_port-1))
                         self.repo_path = os.path.join(server_repo_path, username)
+                        helper.create_repo(self.repo_path)
                         print("[*] LOGIN successfully.")
                         self.info = "[*] LOGIN successfully."
                         self.info_renew = True
