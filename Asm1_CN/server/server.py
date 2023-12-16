@@ -144,8 +144,13 @@ class Server:
 
                 elif (parsed_string[0] == "show"):
                     self.semaphore.acquire()
-                    print(Server.setOfHostInfo)
-                    self.info = f"{Server.setOfHostInfo}"
+                    set_of_host_info = {}
+                    for key in Server.setOfHostInfo:
+                        set_of_host_info[key] = [Server.setOfHostInfo.get(key)[0],Server.setOfHostInfo.get(key)[1],Server.setOfHostInfo.get(key)[3]]
+                    # print(Server.setOfHostInfo)
+                    # self.info = f"{Server.setOfHostInfo}"
+                    print(set_of_host_info)
+                    self.info = f"{set_of_host_info}"
                     self.info_renew = True
                     self.semaphore.release()
                 else:
